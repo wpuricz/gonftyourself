@@ -1,99 +1,60 @@
 <template>
   <div class="hello">
     <h1>{{ msg }}</h1>
-    <h2>Essential Links</h2>
-    <ul>
-      <li>
-        <a
-          href="https://vuejs.org"
-          target="_blank"
-        >
-          Core Docs
-        </a>
-      </li>
-      <li>
-        <a
-          href="https://forum.vuejs.org"
-          target="_blank"
-        >
-          Forum
-        </a>
-      </li>
-      <li>
-        <a
-          href="https://chat.vuejs.org"
-          target="_blank"
-        >
-          Community Chat
-        </a>
-      </li>
-      <li>
-        <a
-          href="https://twitter.com/vuejs"
-          target="_blank"
-        >
-          Twitter
-        </a>
-      </li>
-      <br>
-      <li>
-        <a
-          href="http://vuejs-templates.github.io/webpack/"
-          target="_blank"
-        >
-          Docs for This Template
-        </a>
-      </li>
-    </ul>
-    <h2>Ecosystem</h2>
-    <ul>
-      <li>
-        <a
-          href="http://router.vuejs.org/"
-          target="_blank"
-        >
-          vue-router
-        </a>
-      </li>
-      <li>
-        <a
-          href="http://vuex.vuejs.org/"
-          target="_blank"
-        >
-          vuex
-        </a>
-      </li>
-      <li>
-        <a
-          href="http://vue-loader.vuejs.org/"
-          target="_blank"
-        >
-          vue-loader
-        </a>
-      </li>
-      <li>
-        <a
-          href="https://github.com/vuejs/awesome-vue"
-          target="_blank"
-        >
-          awesome-vue
-        </a>
-      </li>
-    </ul>
+    
+  
+  <table border="1"  class="table table-bordred table-striped product-table">
+      
+      <tr v-for="item in items" :key="item">
+        <td>
+          <a :href="item.permalink" target="_blank">
+          <img :src="item.image_preview_url"/>
+          </a>
+        </td>
+        <td>
+          {{ item.name }}<br/>
+          {{ item.description }}<br/>
+          <a :href="item.permalink">Link</a>
+        </td>
+        
+      </tr>
+    </table>
+
+
   </div>
 </template>
 
 <script>
+import axios from 'axios';
 export default {
   name: 'HelloWorld',
   data () {
     return {
-      msg: 'Welcome to Your Vue.js App'
+      msg: `Pete's Collection`,
+      items: [
+        
+      ]
     }
+  },
+  created: async function() {
+    console.log('fetching assets');
+    this.fetchList();
+  },
+  methods: {
+    async fetchList() {
+      const url = "https://api.opensea.io/api/v1/assets?order_direction=desc&offset=0&limit=20&owner=0x8c059e23890ad6e2a423fb5235956e17c7c92d7f"
+        try {
+          let response = await axios.get(url)
+          this.items = response.data.assets;
+          console.log(JSON.stringify(this.list));
+        }catch(err) {
+          console.log('error fetching assets:' + err);
+        }
+    }
+    
   }
 }
 </script>
-
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 h1, h2 {
