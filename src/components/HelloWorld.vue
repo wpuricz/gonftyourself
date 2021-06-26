@@ -12,9 +12,10 @@
           </a>
         </td>
         <td>
-          {{ item.name }}<br/>
-          {{ item.description }}<br/>
-          <a :href="item.permalink">Link</a>
+          Name: {{ item.name }}<br/>
+          Description: {{ item.description }}<br/>
+          
+          <a :href="item.permalink" target="_blank">Link</a>
         </td>
         
       </tr>
