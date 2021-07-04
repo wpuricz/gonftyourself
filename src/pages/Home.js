@@ -6,7 +6,9 @@ import { useEffect, useState } from 'react';
 import { web3Provider, connectWallet, onNetworkUpdate, OPENSEA_JS_URL, GITHUB_URL, toUnitAmount } from '../constants.js';
 import { OpenSeaPort, Network } from 'opensea-js';
 import { OrderSide } from 'opensea-js/lib/types';
-
+//import * as Web3 from 'web3'
+//import Web3Modal from "web3modal";
+//import { walletconnect } from 'web3modal/dist/providers/connectors';
 
 const Home = () => {
   // page content
@@ -18,21 +20,21 @@ const Home = () => {
   const [collectionDescription, setCollectionDescription] = useState([]);
   //const collectionName = `Pete's Collection`;
   let seaport = null; 
+  //let web3 = null;
   //let accountAddress = '';
 
   useEffect( async () => {
     //await fetchList();
-    if (!accountAddress) {
-      console.log('connecting wallet');
-      await connectWallet();
-      
-    }else{
-      console.log('about to call on change')
-      onChangeAddress();
-      console.log('calling order data')
+    onChangeAddress();
       getOrderData();
+    if (!accountAddress) {
+      //await connectWallet();
+    }else{
+      
     }
   }, [])
+
+  
 
   const onChangeAddress = () => {
     console.log('calling onChangeAddress')
@@ -77,41 +79,21 @@ const Home = () => {
         let response = await axios.get(url)
         setItems(response.data.assets);
         
-        //console.log(JSON.stringify(items));
-
-        //console.log(JSON.stringify(items[0].sell_orders[0].base_price))
       }catch(err) {
         console.log('error fetching assets:' + err);
       }
   }
 
-  // const convertPrice = (price) => {
-  //   web3.fromWei(web3.eth.getBalance(),"ether").toString()
-  // }
-
-  // const connectWallet = async () => {
-  //   if (!window.web3) {
-  //     web3Provider = new PortisProvider({
-  //       // Put your Portis API key here
-  //     })
-  //   } else if (window.ethereum) {
-  //     window.ethereum.enable()
-  //   } else {
-  //     const errorMessage = 'You need an Ethereum wallet to interact with this marketplace. Unlock your wallet, get MetaMask.io or Portis on desktop, or get Trust Wallet or Coinbase Wallet on mobile.'
-  //     alert(errorMessage)
-  //     throw new Error(errorMessage)
-  //   }
-  //   networkCallbacks.map((c) => c(web3Provider))
-  // }
-
-  // const getPrice = (sellOrder) => {
-  //   if(sellOrder[0]) console.log('got sell')
-  //   return "3"
-  // }
-
   const getPrice = (currentPrice, paymentTokenContract) => {
     const price = toUnitAmount(currentPrice, paymentTokenContract)
     return parseFloat(price).toLocaleString(undefined, { minimumSignificantDigits: 1 })
+  }
+
+  const buyPressed = async () => {
+    
+    await connectWallet();
+    
+    
   }
 
   const listItems = items.map((item) =>
@@ -124,9 +106,11 @@ const Home = () => {
         <td>
           <b>Name:</b> { item.asset.name }<br/>
           <b>Description:</b> { item.asset.description }<br/>
-          <b>Price:</b> { getPrice(item.currentPrice, item.paymentTokenContract) } ETH<br/>
-          <a href={item.asset.openseaLink} target="_blank">Link</a>
-
+          
+          <a href={item.asset.openseaLink} target="_blank">Link</a><br/>
+          <button type="button"  onClick={buyPressed}>
+            Price: { getPrice(item.currentPrice, item.paymentTokenContract) } ETH
+          </button>
           
         </td>
     </tr>
