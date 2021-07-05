@@ -22,11 +22,10 @@ export async function connectWallet() {
     //web3Provider = new PortisProvider({
       // Put your Portis API key here
     //})
-    const errorMessage = 'Please use a portis wallet'
+    const errorMessage = 'Please install a crypto wallet'
     alert(errorMessage)
     throw new Error(errorMessage)
   } else if (window.ethereum) {
-    alert('enabling eth')
     window.ethereum.enable()
   } else {
     const errorMessage = 'You need an Ethereum wallet to interact with this marketplace. Unlock your wallet, get MetaMask.io or Portis on desktop, or get Trust Wallet or Coinbase Wallet on mobile.'

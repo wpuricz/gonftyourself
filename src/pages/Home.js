@@ -6,7 +6,9 @@ import { useEffect, useState } from 'react';
 import { web3Provider, connectWallet, onNetworkUpdate, OPENSEA_JS_URL, GITHUB_URL, toUnitAmount } from '../constants.js';
 import { OpenSeaPort, Network } from 'opensea-js';
 import { OrderSide } from 'opensea-js/lib/types';
-
+//import * as Web3 from 'web3'
+//import Web3Modal from "web3modal";
+//import { walletconnect } from 'web3modal/dist/providers/connectors';
 
 const Home = () => {
   // page content
@@ -16,23 +18,20 @@ const Home = () => {
   const [accountAddress, setAccountAddress] = useState([]);
   const [collectionName, setCollectionName] = useState([]);
   const [collectionDescription, setCollectionDescription] = useState([]);
-  //const collectionName = `Pete's Collection`;
   let seaport = null; 
-  //let accountAddress = '';
 
   useEffect( async () => {
     //await fetchList();
-    if (!accountAddress) {
-      console.log('connecting wallet');
-      await connectWallet();
-      
-    }else{
-      console.log('about to call on change')
-      onChangeAddress();
-      console.log('calling order data')
+    onChangeAddress();
       getOrderData();
+    if (!accountAddress) {
+      //await connectWallet();
+    }else{
+      
     }
   }, [])
+
+  
 
   const onChangeAddress = () => {
     console.log('calling onChangeAddress')
@@ -42,7 +41,9 @@ const Home = () => {
     const web3 = seaport.web3
 
     web3.eth.getAccounts((err, res) => {
-      setAccountAddress(res[0]);
+      if(!err) {
+        setAccountAddress(res[0]);
+      }
       
     })
   }
@@ -60,10 +61,7 @@ const Home = () => {
         // 'sale_kind'
         
       }, 1)
-      //console.log(JSON.stringify(orders));
-      console.log(orders[0].asset.name);
-      console.log(orders[0].asset.description);
-      console.log('count:' + count);
+      console.log(JSON.stringify(orders));
       //this.setState({ orders, total: count })
       setCollectionName(orders[0].asset.collection.name);
       setCollectionDescription(orders[0].asset.collection.description);
@@ -77,44 +75,81 @@ const Home = () => {
         let response = await axios.get(url)
         setItems(response.data.assets);
         
-        //console.log(JSON.stringify(items));
-
-        //console.log(JSON.stringify(items[0].sell_orders[0].base_price))
       }catch(err) {
         console.log('error fetching assets:' + err);
       }
   }
-
-  // const convertPrice = (price) => {
-  //   web3.fromWei(web3.eth.getBalance(),"ether").toString()
-  // }
-
-  // const connectWallet = async () => {
-  //   if (!window.web3) {
-  //     web3Provider = new PortisProvider({
-  //       // Put your Portis API key here
-  //     })
-  //   } else if (window.ethereum) {
-  //     window.ethereum.enable()
-  //   } else {
-  //     const errorMessage = 'You need an Ethereum wallet to interact with this marketplace. Unlock your wallet, get MetaMask.io or Portis on desktop, or get Trust Wallet or Coinbase Wallet on mobile.'
-  //     alert(errorMessage)
-  //     throw new Error(errorMessage)
-  //   }
-  //   networkCallbacks.map((c) => c(web3Provider))
-  // }
-
-  // const getPrice = (sellOrder) => {
-  //   if(sellOrder[0]) console.log('got sell')
-  //   return "3"
-  // }
 
   const getPrice = (currentPrice, paymentTokenContract) => {
     const price = toUnitAmount(currentPrice, paymentTokenContract)
     return parseFloat(price).toLocaleString(undefined, { minimumSignificantDigits: 1 })
   }
 
-  const listItems = items.map((item) =>
+  const buyPressed = async (index) => {
+    if(!seaport) {
+      seaport = new OpenSeaPort(web3Provider, {
+        networkName: Network.Rinkeby
+      })
+    }
+    if(!seaport) {
+      alert('seaport still null')
+      return
+    }
+    let account = null;
+    if(window.ethereum) {
+      await window.ethereum.enable();
+      try{
+        account = await window.ethereum.selectedAddress;
+        //setAccountAddress(account);
+        //alert('setting account address:' + accountAddress)
+      }catch(e) {
+        alert('error finding account')
+        return;
+      }
+    }else{
+      alert('Please install a crypto wallet');
+      return;
+    }
+    
+    
+    const schemaName = items[index].metadata.schema;
+    if(items[index].paymentTokenContract.symbol === 'ETH') {
+      alert('Only bids are supported now');
+      return;
+    }
+  
+    const currentPrice = getPrice(items[index].currentPrice, items[index].paymentTokenContract)
+    let bid = prompt("Please enter your bid", currentPrice);
+    if (bid != null) {
+      
+      const { tokenId, tokenAddress } = items[index].asset;
+      if(!seaport) {
+        alert('seaport null')
+        return
+      }
+      let offer;
+      try{
+        await seaport.createBuyOrder({
+        asset: {
+          tokenId,
+          tokenAddress,
+          schemaName // WyvernSchemaName. If omitted, defaults to 'ERC721'. Other options include 'ERC20' and 'ERC1155'
+        },
+        accountAddress: account,
+        // Value of the offer, in units of the payment token (or wrapped ETH if none is specified):
+        startAmount: bid,
+      })
+      alert('successful bid on item. Price: ' + bid + ' check the opensea link to view bid');
+      }catch(e) {
+        alert('error on buy:' + JSON.stringify(e.message));
+        console.log(JSON.stringify(e.message));
+      }
+    }
+    
+    
+  }
+
+  const listItems = items.map((item, index) =>
     <tr>
       <td>
           <a href={item.asset.openseaLink} target="_blank">
@@ -124,9 +159,11 @@ const Home = () => {
         <td>
           <b>Name:</b> { item.asset.name }<br/>
           <b>Description:</b> { item.asset.description }<br/>
-          <b>Price:</b> { getPrice(item.currentPrice, item.paymentTokenContract) } ETH<br/>
-          <a href={item.asset.openseaLink} target="_blank">Link</a>
-
+          
+          <a href={item.asset.openseaLink} target="_blank">Link</a><br/>
+          <button onClick={() => buyPressed(index)}>
+            Buy Price: { getPrice(item.currentPrice, item.paymentTokenContract) } ETH
+          </button>
           
         </td>
     </tr>
@@ -137,7 +174,7 @@ const Home = () => {
       {/* <Meta title={pageTitle}/>
       <Header head={pageTitle} description={pageDescription} /> */}
       <h2>{ collectionName }: { collectionDescription }</h2>
-       <table  class="table table-bordered bordered-primary table-striped product-table">
+       <table  >
         {listItems}
     </table> 
     
