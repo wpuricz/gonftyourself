@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react';
 import { web3Provider, connectWallet, onNetworkUpdate, OPENSEA_JS_URL, GITHUB_URL, toUnitAmount } from '../constants.js';
 import { OpenSeaPort, Network } from 'opensea-js';
 import { OrderSide } from 'opensea-js/lib/types';
+import { Link } from 'react-router-dom';
 //import * as Web3 from 'web3'
 //import Web3Modal from "web3modal";
 //import { walletconnect } from 'web3modal/dist/providers/connectors';
@@ -36,7 +37,7 @@ const Home = () => {
   const onChangeAddress = () => {
     console.log('calling onChangeAddress')
     seaport = new OpenSeaPort(web3Provider, {
-      networkName: Network.Rinkeby
+      networkName: Network.Main
     })
     const web3 = seaport.web3
 
@@ -74,7 +75,7 @@ const Home = () => {
       try {
         let response = await axios.get(url)
         setItems(response.data.assets);
-        
+        console.log(response.data.assets);
       }catch(err) {
         console.log('error fetching assets:' + err);
       }
@@ -84,11 +85,15 @@ const Home = () => {
     const price = toUnitAmount(currentPrice, paymentTokenContract)
     return parseFloat(price).toLocaleString(undefined, { minimumSignificantDigits: 1 })
   }
-
+ const buildDetailUrl = (assetAddress, tokenId) => {
+	console.log(" asset address " + assetAddress);
+    return  '/detail?asset_contract_address='+assetAddress + '&token_id=' + tokenId;
+	
+  }
   const buyPressed = async (index) => {
     if(!seaport) {
       seaport = new OpenSeaPort(web3Provider, {
-        networkName: Network.Rinkeby
+        networkName: Network.Main
       })
     }
     if(!seaport) {
@@ -164,7 +169,9 @@ const Home = () => {
           <button onClick={() => buyPressed(index)}>
             Buy Price: { getPrice(item.currentPrice, item.paymentTokenContract) } ETH
           </button>
-          
+
+          	<a href={buildDetailUrl(item.asset.tokenAddress, item.asset.tokenId)}>Detail </a>
+
         </td>
     </tr>
   );
