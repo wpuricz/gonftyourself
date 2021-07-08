@@ -37,7 +37,7 @@ const Home = () => {
   const onChangeAddress = () => {
     console.log('calling onChangeAddress')
     seaport = new OpenSeaPort(web3Provider, {
-      networkName: Network.Main
+      networkName: Network.Rinkeby
     })
     const web3 = seaport.web3
 
@@ -180,7 +180,7 @@ const Home = () => {
     <div>
       {/* <Meta title={pageTitle}/>
       <Header head={pageTitle} description={pageDescription} /> */}
-      <h2>{ collectionName }: { collectionDescription }</h2>
+      <h2>{ collectionName }:</h2> <h5>{ collectionDescription }</h5>
        <table  >
         {listItems}
     </table> 
