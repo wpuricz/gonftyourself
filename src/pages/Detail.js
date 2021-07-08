@@ -16,7 +16,7 @@ const Detail = () => {
 	const [assetDetails, setAssetDetails] = useState([])
 
 	useEffect(() => {
-		var url = 'https://api.opensea.io/api/v1/asset/'+asset_contract_address + '/' + token_id;
+		var url = 'https://rinkeby-api.opensea.io/api/v1/asset/'+asset_contract_address + '/' + token_id;
 		console.log(`fetching data + ${url}`)
 		axios.get(url)
             .then(res => {
