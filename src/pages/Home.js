@@ -93,7 +93,7 @@ const Home = () => {
   const buyPressed = async (index) => {
     if(!seaport) {
       seaport = new OpenSeaPort(web3Provider, {
-        networkName: Network.Main
+        networkName: Network.Rinkeby
       })
     }
     if(!seaport) {
