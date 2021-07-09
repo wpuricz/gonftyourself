@@ -183,10 +183,13 @@ const Home = () => {
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
+  const placeBid = (amount) => {
+    alert("ok placing bid for:" + amount);
+  }
 
   return (
     <div>
-      <Wallet show={show} handleClose={handleClose}/>
+      <Wallet show={show} handleClose={handleClose} placeBid={placeBid}/>
       <h2>{ collectionName }:</h2> <h5>{ collectionDescription }</h5>
        <table  >
         {listItems}
