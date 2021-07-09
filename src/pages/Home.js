@@ -1,12 +1,13 @@
 import Header from '../components/Header'
 import Meta from '../components/Meta'
 import axios from 'axios';
-
+import { Button } from 'react-bootstrap'
 import { useEffect, useState } from 'react';
 import { web3Provider, connectWallet, onNetworkUpdate, OPENSEA_JS_URL, GITHUB_URL, toUnitAmount } from '../constants.js';
 import { OpenSeaPort, Network } from 'opensea-js';
 import { OrderSide } from 'opensea-js/lib/types';
 import { Link } from 'react-router-dom';
+import Wallet from './Wallet'
 //import * as Web3 from 'web3'
 //import Web3Modal from "web3modal";
 //import { walletconnect } from 'web3modal/dist/providers/connectors';
@@ -19,6 +20,7 @@ const Home = () => {
   const [accountAddress, setAccountAddress] = useState([]);
   const [collectionName, setCollectionName] = useState([]);
   const [collectionDescription, setCollectionDescription] = useState([]);
+  const [show, setShow] = useState(false);
   let seaport = null; 
 
   useEffect( async () => {
@@ -91,6 +93,9 @@ const Home = () => {
 	
   }
   const buyPressed = async (index) => {
+    handleShow();
+    return;
+    
     if(!seaport) {
       seaport = new OpenSeaPort(web3Provider, {
         networkName: Network.Rinkeby
@@ -166,9 +171,9 @@ const Home = () => {
           <b>Description:</b> { item.asset.description }<br/>
           
           <a href={item.asset.openseaLink} target="_blank">Link</a><br/>
-          <button onClick={() => buyPressed(index)}>
+          <Button onClick={() => buyPressed(index)}>
             Buy Price: { getPrice(item.currentPrice, item.paymentTokenContract) } ETH
-          </button>
+          </Button>
 
           	<a href={buildDetailUrl(item.asset.tokenAddress, item.asset.tokenId)}>Detail </a>
 
@@ -176,10 +181,12 @@ const Home = () => {
     </tr>
   );
 
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
+
   return (
     <div>
-      {/* <Meta title={pageTitle}/>
-      <Header head={pageTitle} description={pageDescription} /> */}
+      <Wallet show={show} handleClose={handleClose}/>
       <h2>{ collectionName }:</h2> <h5>{ collectionDescription }</h5>
        <table  >
         {listItems}
