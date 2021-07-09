@@ -1,16 +1,10 @@
-import Header from '../components/Header'
-import Meta from '../components/Meta'
 import axios from 'axios';
 import { Button } from 'react-bootstrap'
 import { useEffect, useState } from 'react';
 import { web3Provider, connectWallet, onNetworkUpdate, OPENSEA_JS_URL, GITHUB_URL, toUnitAmount } from '../constants.js';
 import { OpenSeaPort, Network } from 'opensea-js';
 import { OrderSide } from 'opensea-js/lib/types';
-import { Link } from 'react-router-dom';
-import Wallet from './Wallet'
-//import * as Web3 from 'web3'
-//import Web3Modal from "web3modal";
-//import { walletconnect } from 'web3modal/dist/providers/connectors';
+import BidModal from './BidModal'
 
 const Home = () => {
   // page content
@@ -20,6 +14,8 @@ const Home = () => {
   const [accountAddress, setAccountAddress] = useState([]);
   const [collectionName, setCollectionName] = useState([]);
   const [collectionDescription, setCollectionDescription] = useState([]);
+  const [selectedName, setSelectedName] = useState([]);
+  const [selectedPrice, setSelectedPrice] = useState([]);
   const [show, setShow] = useState(false);
   let seaport = null; 
 
@@ -93,6 +89,25 @@ const Home = () => {
 	
   }
   const buyPressed = async (index) => {
+    // check if a wallet exists, if not then go to wallet page
+    setSelectedPrice(getPrice(items[index].currentPrice, items[index].paymentTokenContract));
+    setSelectedName(items[index].asset.name);
+    
+    let account = null;
+    if(window.ethereum) {
+      await window.ethereum.enable();
+      try{
+        account = await window.ethereum.selectedAddress;
+        //setAccountAddress(account);
+        //alert('setting account address:' + accountAddress)
+      }catch(e) {
+        alert('Error occurred')
+        return;
+      }
+    }else{
+      alert('Please install a crypto wallet');
+      return;
+    }
     handleShow();
     return;
     
@@ -105,21 +120,7 @@ const Home = () => {
       alert('seaport still null')
       return
     }
-    let account = null;
-    if(window.ethereum) {
-      await window.ethereum.enable();
-      try{
-        account = await window.ethereum.selectedAddress;
-        //setAccountAddress(account);
-        //alert('setting account address:' + accountAddress)
-      }catch(e) {
-        alert('error finding account')
-        return;
-      }
-    }else{
-      alert('Please install a crypto wallet');
-      return;
-    }
+    
     
     
     const schemaName = items[index].metadata.schema;
@@ -189,7 +190,13 @@ const Home = () => {
 
   return (
     <div>
-      <Wallet show={show} handleClose={handleClose} placeBid={placeBid}/>
+      <BidModal 
+        show={show} 
+        handleClose={handleClose} 
+        placeBid={placeBid} 
+        price={selectedPrice} 
+        name={selectedName}
+      />
       <h2>{ collectionName }:</h2> <h5>{ collectionDescription }</h5>
        <table  >
         {listItems}

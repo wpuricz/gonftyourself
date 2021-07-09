@@ -1,11 +1,9 @@
-import axios from 'axios';
-
 import { useEffect, useState } from 'react';
 import { Button, Modal, Form } from 'react-bootstrap'
 
-const Wallet = (props) => {
+const BidModal = (props) => {
   
-  const { handleClose, show, placeBid} = props;
+  const { handleClose, show, placeBid, price, name} = props;
   const [bid,setBid] = useState();
   
   const bidPressed = () => {
@@ -32,9 +30,9 @@ const Wallet = (props) => {
         <Form>
         <Form.Group controlId="formBasicEmail">
             <Form.Label>Bid Price</Form.Label>
-            <Form.Control type="text" placeholder="0.1" value={bid} onChange={e => setBid(e.target.value)} />
+            <Form.Control type="text" placeholder="0.1" value={price} onChange={e => setBid(e.target.value)} />
             <Form.Text className="text-muted">
-            Enter bid.
+            Enter bid for { name }
             </Form.Text>
         </Form.Group>
         </Form>
@@ -50,4 +48,4 @@ const Wallet = (props) => {
   )
 }
 
-export default Wallet
+export default BidModal
