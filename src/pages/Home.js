@@ -155,38 +155,56 @@ const Home = () => {
   }
 
   const listItems = items.map((item, index) =>
-    <tr>
-      <td>
-          <a href={item.asset.openseaLink} target="_blank">
+    
+
+<div class="product-card">
+			<div class="product-image">
+				<a href={item.asset.openseaLink} target="_blank">
           <img src={item.asset.imagePreviewUrl}/>
-          </a>
-        </td>
-        <td>
-          <b>Name:</b> { item.asset.name }<br/>
-          <b>Description:</b> { item.asset.description }<br/>
-          
-          <a href={item.asset.openseaLink} target="_blank">Link</a><br/>
+          </a>			</div>
+			<div class="product-info">
+				<h5>{ item.asset.name }</h5>
+				<p> { item.asset.description }</p>
+				<a href={item.asset.openseaLink} target="_blank">Link</a><br/>
           <button onClick={() => buyPressed(index)}>
             Buy Price: { getPrice(item.currentPrice, item.paymentTokenContract) } ETH
           </button>
+<a href={buildDetailUrl(item.asset.tokenAddress, item.asset.tokenId)}>Detail </a>
 
-          	<a href={buildDetailUrl(item.asset.tokenAddress, item.asset.tokenId)}>Detail </a>
-
-        </td>
-    </tr>
+			</div>
+		</div>
   );
 
   return (
-    <div>
-      {/* <Meta title={pageTitle}/>
-      <Header head={pageTitle} description={pageDescription} /> */}
-      <h2>{ collectionName }: { collectionDescription }</h2>
-       <table  >
-        {listItems}
-    </table> 
-    
-    </div>
-  )
+	<div>
+	<nav class="product-filter">
+		<h1>{ collectionName }</h1>
+		<p>{ collectionDescription }</p>
+		<div class="sort">
+			<div class="collection-sort">
+				<label>Filter by:</label>
+				<select>
+		      <option value="/">All Jackets</option>
+		      <option value="/">2016</option>
+		      
+		   	</select>
+			</div>
+			
+			<div class="collection-sort">
+				<label>Sort by:</label>
+				<select>
+		      <option value="/">Featured</option>
+		      <option value="/">Best Selling</option>
+		      <option value="/">Alphabetically, A-Z</option>
+		     
+		    </select>
+			</div>
+		</div>
+	</nav>
+	<section class="products">
+	 {listItems} 
+	</section>
+	</div>
+ )
 }
-
 export default Home
