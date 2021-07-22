@@ -1,8 +1,6 @@
-@import url('https://fonts.googleapis.com/css2?family=Comfortaa:wght@300&display=swap');
 
-body {
-  font-family: 'Comfortaa', cursive;
-}
+@import url(https://fonts.googleapis.com/css?family=Roboto:400,300,500);
+
 
 main {
   min-height: 80vh;
@@ -72,11 +70,6 @@ table{
     border-spacing:0;
 }
 
-/*------------------------------------*\
-    $MAIN
-\*------------------------------------*/
-
-@import url(https://fonts.googleapis.com/css?family=Roboto:400,300,500);
 
 body {
 	margin: 0 auto;
