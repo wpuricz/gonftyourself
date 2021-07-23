@@ -6,18 +6,17 @@ import { useEffect, useState } from 'react';
 import { web3Provider, connectWallet, onNetworkUpdate, OPENSEA_JS_URL, GITHUB_URL, toUnitAmount } from '../constants.js';
 import { OpenSeaPort, Network } from 'opensea-js';
 import { OrderSide } from 'opensea-js/lib/types';
-import { Link } from 'react-router-dom';
-//import * as Web3 from 'web3'
-//import Web3Modal from "web3modal";
-//import { walletconnect } from 'web3modal/dist/providers/connectors';
+
 
 const Home = () => {
   // page content
-  const pageTitle = 'Home'
-  const pageDescription = 'welcome to react bootstrap templates'
+  
   const [items, setItems] = useState([]);
   const [accountAddress, setAccountAddress] = useState([]);
   const [collectionName, setCollectionName] = useState([]);
+  const [collectionBannerImage, setCollectionBannerImage] = useState([]);
+  const [collectionFeatureImage, setCollectionFeatureImage] = useState([]);
+  const [collectionImage, setCollectionImage] = useState([]);
   const [collectionDescription, setCollectionDescription] = useState([]);
   let seaport = null; 
 
@@ -55,13 +54,7 @@ const Home = () => {
       const { orders, count } = await seaport.api.getOrders({
         owner: '0x8c059e23890ad6e2a423fb5235956e17c7c92d7f',
         side: OrderSide.Sell,
-        // Possible query options:
-        // 'asset_contract_address'
-        // 'taker'
-        // 'token_id'
-        // 'token_ids'
-        // 'sale_kind'
-        
+       
       }, 1)
       console.log(JSON.stringify(orders));
       //this.setState({ orders, total: count })
@@ -77,8 +70,12 @@ const Home = () => {
         let response = await axios.get(url);
         let items = response.data.assets;
         setItems(items);
-        setCollectionName(items.name);
-        setCollectionDescription(items.description);
+
+  		setCollectionBannerImage(items[0].collection.banner_image_url);
+  		setCollectionFeatureImage(items[0].collection.featured_image);
+		setCollectionImage(items[0].collection.image_url);
+        setCollectionName(items[0].collection.name);
+        setCollectionDescription(items[0].collection.description);
         console.log(response.data.assets);
       }catch(err) {
         console.log('error fetching assets:' + err);
@@ -167,7 +164,7 @@ const Home = () => {
   }
 
   const listItems = items.map((item, index) => 
-        
+
 
     <div class="product-card">
 			<div class="product-image">
@@ -196,20 +193,23 @@ const Home = () => {
           }
 			</div>
 		</div>
+		
+	
   );
 
   return (
     
-	<div>
-	<nav class="product-filter">
-		<h1>{ collectionName }</h1>
-		<p>{ collectionDescription }</p>
+
+	<div class="collection">
+
+<h1>{collectionName}</h1><br/>
 		
-	</nav>
+		<img src={collectionBannerImage}/>
+	<p>{collectionDescription}</p>
 	<section class="products">
 	 {listItems} 
 	</section>
-	</div>
+</div>
  )
 }
 
