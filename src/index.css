@@ -145,7 +145,16 @@ label {
 .product-image a img {
 	width: 100%;
 }
-
+.collection img {
+    max-width: 100%;
+}
+.product-info p {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 5;
+    -webkit-box-orient: vertical;
+ }
 .product-info {
 	/*margin-top: auto; */
 	padding-top: 20px;
