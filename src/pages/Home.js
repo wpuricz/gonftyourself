@@ -24,7 +24,8 @@ const Home = () => {
   useEffect( async () => {
     //await fetchList();
     onChangeAddress();
-      getOrderData();
+      //getOrderData();
+      fetchList();
     if (!accountAddress) {
       //await connectWallet();
     }else{
@@ -70,11 +71,14 @@ const Home = () => {
   }
   
   const fetchList = async () => {
-    const url = "https://api.opensea.io/api/v1/assets?order_direction=desc&offset=0&limit=20&owner=0x8c059e23890ad6e2a423fb5235956e17c7c92d7f"
+    const url = "https://rinkeby-api.opensea.io/api/v1/assets?order_direction=desc&offset=0&limit=20&owner=0x8c059e23890ad6e2a423fb5235956e17c7c92d7f"
     console.log('fetching data')  
       try {
-        let response = await axios.get(url)
-        setItems(response.data.assets);
+        let response = await axios.get(url);
+        let items = response.data.assets;
+        setItems(items);
+        setCollectionName(items.name);
+        setCollectionDescription(items.description);
         console.log(response.data.assets);
       }catch(err) {
         console.log('error fetching assets:' + err);
@@ -85,6 +89,14 @@ const Home = () => {
     const price = toUnitAmount(currentPrice, paymentTokenContract)
     return parseFloat(price).toLocaleString(undefined, { minimumSignificantDigits: 1 })
   }
+
+  const getPriceFromAsset = (sellOrder) => {
+    if(!sellOrder || !sellOrder[0]) return null; // also check created_date and closing_date to see if active
+    // or "expiration_time": 1628994402
+    const price = toUnitAmount(sellOrder[0].base_price, sellOrder[0].payment_token_contract);
+    return parseFloat(price).toLocaleString(undefined, { minimumSignificantDigits: 1 })
+  }
+
  const buildDetailUrl = (assetAddress, tokenId) => {
 	console.log(" asset address " + assetAddress);
     return  '/detail?asset_contract_address='+assetAddress + '&token_id=' + tokenId;
@@ -117,17 +129,17 @@ const Home = () => {
     }
     
     
-    const schemaName = items[index].metadata.schema;
-    if(items[index].paymentTokenContract.symbol === 'ETH') {
+    const schemaName = items[index].asset_contract.schema_name;
+    if(items[index].sell_orders[0].payment_token_contract.symbol === 'ETH') {
       alert('Only bids are supported now');
       return;
     }
   
-    const currentPrice = getPrice(items[index].currentPrice, items[index].paymentTokenContract)
+    const currentPrice = getPrice(items[index].sell_orders[0].base_price, items[index].sell_orders[0].payment_token_contract)
     let bid = prompt("Please enter your bid", currentPrice);
     if (bid != null) {
-      
-      const { tokenId, tokenAddress } = items[index].asset;
+      const tokenAddress = items[index].asset_contract.address
+      const tokenId = items[index].token_id;
       if(!seaport) {
         alert('seaport null')
         return
@@ -154,23 +166,34 @@ const Home = () => {
     
   }
 
-  const listItems = items.map((item, index) =>
+  const listItems = items.map((item, index) => 
     <tr>
       <td>
-          <a href={item.asset.openseaLink} target="_blank">
-          <img src={item.asset.imagePreviewUrl}/>
+          <a href={item.permalink} target="_blank">
+          <img src={item.image_preview_url}/>
           </a>
         </td>
         <td>
-          <b>Name:</b> { item.asset.name }<br/>
-          <b>Description:</b> { item.asset.description }<br/>
+          <b>Name:</b> { item.name }<br/>
+          <b>Description:</b> { item.description }<br/>
           
-          <a href={item.asset.openseaLink} target="_blank">Link</a><br/>
+          <a href={item.permalink} target="_blank">Link</a><br/>
+          {
+            getPriceFromAsset(item.sell_orders) ?
+          
           <button onClick={() => buyPressed(index)}>
-            Buy Price: { getPrice(item.currentPrice, item.paymentTokenContract) } ETH
+            Buy Price: { getPriceFromAsset(item.sell_orders) } ETH
           </button>
+          :
+          <span></span>
+          }
 
-          	<a href={buildDetailUrl(item.asset.tokenAddress, item.asset.tokenId)}>Detail </a>
+          {
+            item.asset_contract ?
+            <a href={buildDetailUrl(item.asset_contract.address, item.token_id)}>Detail </a> :
+            <span>None</span>
+          }
+          	
 
         </td>
     </tr>
