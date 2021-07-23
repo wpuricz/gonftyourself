@@ -167,17 +167,17 @@ const Home = () => {
   }
 
   const listItems = items.map((item, index) => 
-    <tr>
-      <td>
-          <a href={item.permalink} target="_blank">
-          <img src={item.image_preview_url}/>
-          </a>
-        </td>
-        <td>
-          <b>Name:</b> { item.name }<br/>
-          <b>Description:</b> { item.description }<br/>
-          
-          <a href={item.permalink} target="_blank">Link</a><br/>
+        
+
+    <div class="product-card">
+			<div class="product-image">
+				<a href={item.permalink} target="_blank"><img src={item.image_preview_url}/></a>
+			</div>
+			<div class="product-info">
+				<h5><a href={item.permalink} target="_blank">{ item.name }</a> </h5>
+				<p> { item.description }</p>
+				 
+          <a href={item.permalink} target="_blank">Opensea Link</a><br/>
           {
             getPriceFromAsset(item.sell_orders) ?
           
@@ -187,29 +187,30 @@ const Home = () => {
           :
           <span></span>
           }
-
+<p/>
           {
+	
             item.asset_contract ?
-            <a href={buildDetailUrl(item.asset_contract.address, item.token_id)}>Detail </a> :
+             <a href={buildDetailUrl(item.asset_contract.address, item.token_id)}>Detail </a> :
             <span>None</span>
           }
-          	
-
-        </td>
-    </tr>
+			</div>
+		</div>
   );
 
   return (
-    <div>
-      {/* <Meta title={pageTitle}/>
-      <Header head={pageTitle} description={pageDescription} /> */}
-      <h2>{ collectionName }:</h2> <h5>{ collectionDescription }</h5>
-       <table  >
-        {listItems}
-    </table> 
     
-    </div>
-  )
+	<div>
+	<nav class="product-filter">
+		<h1>{ collectionName }</h1>
+		<p>{ collectionDescription }</p>
+		
+	</nav>
+	<section class="products">
+	 {listItems} 
+	</section>
+	</div>
+ )
 }
 
 export default Home
