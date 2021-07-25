@@ -7,3 +7,12 @@ body {
 main {
   min-height: 80vh;
 }
+
+.detail-bottom-margin {
+  margin-bottom: 30px
+}
+
+.detail-image-margin {
+  margin-right: 10px;
+  margin-left: 10px;
+}
