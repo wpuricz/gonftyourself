@@ -5,7 +5,6 @@ import axios from 'axios';
 import { useEffect, useState } from 'react';
 import queryString from 'query-string'
 import { useLocation } from 'react-router-dom'
-import '../index.css'
 
 const Detail = (props) => {
 	// page contents
@@ -33,7 +32,7 @@ const Detail = (props) => {
 				<img src={assetDetails.image_url + imageSuffix}></img>
 			</div>
 			<div class="col-xl-6 col-lg-6 col-md-8 col-sm-12 mx-auto detail-bottom-margin">
-				<h2>{assetDetails.name}</h2>
+				<h1 class="detail-bottom-margin">{assetDetails.name}</h1>
 				<div>{assetDetails.description}</div>
 			</div>
 		</div>
