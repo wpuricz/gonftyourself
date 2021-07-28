@@ -168,13 +168,13 @@ const Home = () => {
 
 		<div class="product-card">
 			<div class="product-image">
-				<a href={item.permalink} target="_blank"><img src={item.image_preview_url} /></a>
+				<a href={buildDetailUrl(item.asset_contract.address, item.token_id)} ><img src={item.image_preview_url} /></a>
 			</div>
 			<div class="product-info">
 				<h5>{item.name} </h5>
 				
 
-				<a href={item.permalink} target="_blank">Opensea Link</a><br />
+			
 				{
 					getPriceFromAsset(item.sell_orders) ?
 

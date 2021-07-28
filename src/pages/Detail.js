@@ -49,7 +49,7 @@ return (
 			</div>
 			<div class="col-xl-6 col-lg-6 col-md-8 col-sm-12 mx-auto detail-bottom-margin">
 				<h1 class="detail-bottom-margin">{assetDetails.name}</h1>
-				<h4 class="detail-bottom-margin">Creator {assetDetails.creator.user.username}    Owner {assetDetails.owner.user.username}</h4>
+				<h4 class="detail-bottom-margin">Creator {assetDetails.creator && assetDetails.creator.user ? assetDetails.creator.user.username: ''}    Owner {assetDetails.owner && assetDetails.owner.user ? assetDetails.owner.user.username : ''}</h4>
 				<div>{assetDetails.description}</div><br/>
 				<div align="left"><h2>Properties</h2></div>
 				
