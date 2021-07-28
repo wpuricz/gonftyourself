@@ -14,7 +14,7 @@ const Detail = (props) => {
 	const asset_contract_address = params.get('asset_contract_address')
 	const token_id = params.get('token_id')
 	const [assetDetails, setAssetDetails] = useState([])
-	const [paymentTokens,  setPaymentTokens] = useState([]);
+	const [properties,  setProperties] = useState([]);
 	const imageSuffix = (window.screen.width > 1024) ? '=w600' : '';
 
 	useEffect(() => {
@@ -24,21 +24,18 @@ const Detail = (props) => {
 		axios.get(url)
             .then(res => {
                 setAssetDetails(res.data);
-				let paymentTokens = res.data.collection.payment_tokens;
-				setPaymentTokens(paymentTokens);
+				let properties = res.data.traits;
+				setProperties(properties);
 				console.log(JSON.stringify(res.data.collection.payment_tokens))
             })
 	}, [])
 
 	
-	const listPaymentTokens = paymentTokens.map((item, index) =>
+	const listProperties = properties.map((item, index) =>
 
-
-		<div class="flex-table row" role="rowgroup">
-  <div class="flex-row first" role="cell"><span class="flag-icon flag-icon-gb"></span> {item.id}</div>
-  <div class="flex-row" role="cell">{item.symbol} </div>
-  <div class="flex-row" role="cell">{item.decimal}.</div>
-  <div class="flex-row" role="cell">{item.eth_price}</div>
+<div>
+  <div ><span class="flag-icon flag-icon-gb"></span> {item.trait_type}: {item.value}</div>
+   
 </div>
 
 
@@ -52,16 +49,12 @@ return (
 			</div>
 			<div class="col-xl-6 col-lg-6 col-md-8 col-sm-12 mx-auto detail-bottom-margin">
 				<h1 class="detail-bottom-margin">{assetDetails.name}</h1>
-				<div>{assetDetails.description}</div>
-				<div class="table-container" role="table" aria-label="Destinations">
-  <div class="flex-table row" role="rowgroup">
-  <div class="flex-row " role="cell">id</div>
-  <div class="flex-row" role="cell">Symbol</div>
-  <div class="flex-row" role="cell">Decimal</div>
-  <div class="flex-row" role="cell">ETH Price</div>
-</div>
-{listPaymentTokens}
-</div>
+				<h4 class="detail-bottom-margin">Creator {assetDetails.creator.user.username}    Owner {assetDetails.owner.user.username}</h4>
+				<div>{assetDetails.description}</div><br/>
+				<div align="left"><h2>Properties</h2></div>
+				
+{listProperties}
+
 				
 			</div>
 		</div>
