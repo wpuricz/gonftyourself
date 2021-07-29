@@ -185,12 +185,7 @@ const Home = () => {
 						<span></span>
 				}
 				<p />
-				{
-
-					item.asset_contract ?
-						<a href={buildDetailUrl(item.asset_contract.address, item.token_id)}>Detail </a> :
-						<span>None</span>
-				}
+				
 			</div>
 		</div>
 
