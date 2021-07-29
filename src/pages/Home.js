@@ -171,7 +171,7 @@ const Home = () => {
 				<a href={buildDetailUrl(item.asset_contract.address, item.token_id)} ><img src={item.image_preview_url} /></a>
 			</div>
 			<div class="product-info">
-				<h5>{item.name} </h5>
+				<h5><a href={buildDetailUrl(item.asset_contract.address, item.token_id)} >{item.name} </a></h5>
 				
 
 			
