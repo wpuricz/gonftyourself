@@ -64,7 +64,7 @@ const Home = () => {
 	}
 
 	const fetchList = async () => {
-		const url = "https://rinkeby-api.opensea.io/api/v1/assets?order_direction=desc&offset=0&limit=20&owner=0x8c059e23890ad6e2a423fb5235956e17c7c92d7f"
+		const url = "https://rinkeby-api.opensea.io/api/v1/assets?order_direction=desc&offset=0&limit=20&collection=carbureted"
 		console.log('fetching data')
 		try {
 			let response = await axios.get(url);
