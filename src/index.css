@@ -160,6 +160,7 @@ label {
 }
 .collection .icon {
     margin: 10px 10px 10px 10px;
+    border-radius: 50%;
 }
 .product-info p {
     overflow: hidden;
