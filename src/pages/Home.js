@@ -64,7 +64,7 @@ const Home = () => {
 	}
 
 	const fetchList = async () => {
-		const url = "https://rinkeby-api.opensea.io/api/v1/assets?order_direction=desc&offset=0&limit=20&owner=0x8c059e23890ad6e2a423fb5235956e17c7c92d7f"
+		const url = "https://rinkeby-api.opensea.io/api/v1/assets?order_direction=desc&offset=0&limit=20&collection=carbureted"
 		console.log('fetching data')
 		try {
 			let response = await axios.get(url);
@@ -171,7 +171,7 @@ const Home = () => {
 				<a href={buildDetailUrl(item.asset_contract.address, item.token_id)} ><img src={item.image_preview_url} /></a>
 			</div>
 			<div class="product-info">
-				<h5>{item.name} </h5>
+				<h5><a href={buildDetailUrl(item.asset_contract.address, item.token_id)} >{item.name} </a></h5>
 				
 
 			
@@ -185,12 +185,7 @@ const Home = () => {
 						<span></span>
 				}
 				<p />
-				{
-
-					item.asset_contract ?
-						<a href={buildDetailUrl(item.asset_contract.address, item.token_id)}>Detail </a> :
-						<span>None</span>
-				}
+				
 			</div>
 		</div>
 

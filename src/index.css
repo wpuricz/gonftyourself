@@ -160,6 +160,7 @@ label {
 }
 .collection .icon {
     margin: 10px 10px 10px 10px;
+    border-radius: 50%;
 }
 .product-info p {
     overflow: hidden;
@@ -173,7 +174,9 @@ label {
 	padding-top: 20px;
 	text-align: center;
 }
-
+.product-info  h5 a {
+    color: #141515
+    }
 @media ( max-width: 920px ) {
 	
 	.product-card {
