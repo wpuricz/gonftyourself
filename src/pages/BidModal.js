@@ -30,7 +30,7 @@ const BidModal = (props) => {
         <Form>
         <Form.Group controlId="formBasicEmail">
             <Form.Label>Bid Price</Form.Label>
-            <Form.Control type="text" placeholder="0.1" value={price} onChange={e => setBid(e.target.value)} />
+            <Form.Control type="text" placeholder={price} value={bid} onChange={e => setBid(e.target.value)} />
             <Form.Text className="text-muted">
             Enter bid for { name }
             </Form.Text>
