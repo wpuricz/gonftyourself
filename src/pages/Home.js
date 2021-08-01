@@ -1,12 +1,11 @@
-import Header from '../components/Header'
-import Meta from '../components/Meta'
 import axios from 'axios';
-
+import { Button } from 'react-bootstrap'
 import { useEffect, useState } from 'react';
 import { web3Provider, connectWallet, onNetworkUpdate, OPENSEA_JS_URL, GITHUB_URL, toUnitAmount } from '../constants.js';
 import { OpenSeaPort, Network } from 'opensea-js';
 import { OrderSide } from 'opensea-js/lib/types';
 
+import BidModal from './BidModal'
 
 const Home = () => {
 	// page content
@@ -18,7 +17,12 @@ const Home = () => {
 	const [collectionFeatureImage, setCollectionFeatureImage] = useState([]);
 	const [collectionImage, setCollectionImage] = useState([]);
 	const [collectionDescription, setCollectionDescription] = useState([]);
-	let seaport = null;
+	const [selectedName, setSelectedName] = useState([]);
+  const [selectedPrice, setSelectedPrice] = useState([]);
+  const [selectedIndex, setSelectedIndex] = useState([]);
+  const [show, setShow] = useState(false);
+
+  let seaport = null;
 
 	useEffect(async () => {
 		//await fetchList();
@@ -31,8 +35,6 @@ const Home = () => {
 
 		}
 	}, [])
-
-
 
 	const onChangeAddress = () => {
 		console.log('calling onChangeAddress')
@@ -99,69 +101,35 @@ const Home = () => {
 		return '/detail?asset_contract_address=' + assetAddress + '&token_id=' + tokenId;
 
 	}
+
 	const buyPressed = async (index) => {
-		if (!seaport) {
-			seaport = new OpenSeaPort(web3Provider, {
-				networkName: Network.Rinkeby
-			})
-		}
-		if (!seaport) {
-			alert('seaport still null')
-			return
-		}
-		let account = null;
-		if (window.ethereum) {
-			await window.ethereum.enable();
-			try {
-				account = await window.ethereum.selectedAddress;
-				//setAccountAddress(account);
-				//alert('setting account address:' + accountAddress)
-			} catch (e) {
-				alert('error finding account')
-				return;
-			}
-		} else {
-			alert('Please install a crypto wallet');
-			return;
-		}
-
-
-		const schemaName = items[index].asset_contract.schema_name;
-		if (items[index].sell_orders[0].payment_token_contract.symbol === 'ETH') {
-			alert('Only bids are supported now');
-			return;
-		}
-
-		const currentPrice = getPrice(items[index].sell_orders[0].base_price, items[index].sell_orders[0].payment_token_contract)
-		let bid = prompt("Please enter your bid", currentPrice);
-		if (bid != null) {
-			const tokenAddress = items[index].asset_contract.address
-			const tokenId = items[index].token_id;
-			if (!seaport) {
-				alert('seaport null')
-				return
-			}
-			let offer;
-			try {
-				await seaport.createBuyOrder({
-					asset: {
-						tokenId,
-						tokenAddress,
-						schemaName // WyvernSchemaName. If omitted, defaults to 'ERC721'. Other options include 'ERC20' and 'ERC1155'
-					},
-					accountAddress: account,
-					// Value of the offer, in units of the payment token (or wrapped ETH if none is specified):
-					startAmount: bid,
-				})
-				alert('successful bid on item. Price: ' + bid + ' check the opensea link to view bid');
-			} catch (e) {
-				alert('error on buy:' + JSON.stringify(e.message));
-				console.log(JSON.stringify(e.message));
-			}
-		}
-
-
+    // check if a wallet exists, if not then go to wallet page
+    const currentPrice = getPriceFromAsset(items[index].sell_orders);
+    setSelectedPrice(currentPrice);
+    setSelectedName(items[index].name);
+    setSelectedIndex(index);
+    
+    const account = await connectWallet();
+    if(account) {
+      handleShow();
+    }
 	}
+
+  const connectWallet = async () => {
+    if(window.ethereum) {
+      await window.ethereum.enable();
+      try{
+        let account = await window.ethereum.selectedAddress;
+        return account;
+      }catch(e) {
+        alert('Error occurred')
+        return;
+      }
+    }else{
+      alert('Please install a crypto wallet');
+      return;
+    }
+  }
 
 	const listItems = items.map((item, index) =>
 
@@ -192,10 +160,69 @@ const Home = () => {
 
 	);
 
-	return (
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
+  
+  const placeBid = async (amount) => {  
+    const index = selectedIndex;
+    if(!seaport) {
+      seaport = new OpenSeaPort(web3Provider, {
+        networkName: Network.Rinkeby
+      })
+    }
+    if(!seaport) {
+      alert('seaport still null')
+      return
+    }
+    const schemaName = items[index].asset_contract.schema_name;
+    
+    if(items[index].sell_orders[0].payment_token_contract.symbol === 'ETH') {
+      alert('Only bids are supported now');
+      return;
+    }
 
+    let account = await window.ethereum.selectedAddress;
+    const currentPrice = getPriceFromAsset(items[index].sell_orders);
+    
+    if (amount != null) {
+      
+      const tokenAddress = items[index].asset_contract.address
+			const tokenId = items[index].token_id;
+      if(!seaport) {
+        alert('seaport null')
+        return
+      }
+      let offer;
+      try{
+        await seaport.createBuyOrder({
+        asset: {
+          tokenId,
+          tokenAddress,
+          schemaName // WyvernSchemaName. If omitted, defaults to 'ERC721'. Other options include 'ERC20' and 'ERC1155'
+        },
+        accountAddress: account,
+        // Value of the offer, in units of the payment token (or wrapped ETH if none is specified):
+        startAmount: amount,
+      })
+      alert('successful bid on item. Price: ' + amount + ' check the opensea link to view bid');
+      }catch(e) {
+        alert('error on buy:' + JSON.stringify(e.message));
+        console.log(JSON.stringify(e.message));
+      }
+    }
+  }
+
+	return (
+    
 
 		<div class="collection">
+      <BidModal 
+        show={show} 
+        handleClose={handleClose} 
+        placeBid={placeBid} 
+        price={selectedPrice} 
+        name={selectedName}
+      />
 			<div>
 			<img src={collectionBannerImage}  />
 			
