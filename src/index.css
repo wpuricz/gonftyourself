@@ -175,7 +175,8 @@ label {
 	text-align: center;
 }
 .product-info  h5 a {
-    color: #141515
+    color: #141515;
+    text-decoration: none;
     }
 @media ( max-width: 920px ) {
 	
