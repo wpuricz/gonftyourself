@@ -10,7 +10,7 @@ const About = () => {
     <div>
       <Meta title={pageTitle}/>
       <Header head={pageTitle} description={pageDescription} />
-      <iframe
+      {/* <iframe
         src="https://app.uniswap.org/#/swap?outputCurrency=0xc778417E063141139Fce010982780140Aa0cD5Ab&inputCurrency=ETH&exactAmount=0.1"
         height="660px"
         width="100%"
@@ -28,8 +28,8 @@ const About = () => {
         autoplay; camera; gyroscope; payment"
         
       >
-        <a href="https://widget.onramper.com" target="_blank">Buy crypto</a>
-      </iframe>
+        <a href="https://widget.onramper.com" target="_blank">Buy crypto</a> 
+      </iframe> */}
     </div>
   )
 }
