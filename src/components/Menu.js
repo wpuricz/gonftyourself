@@ -1,7 +1,24 @@
 import { Nav, Container } from 'react-bootstrap'
 import { LinkContainer } from 'react-router-bootstrap'
+import { connectWallet } from '../constants'
 
 const Menu = () => {
+  // const connectWallet = async () => {
+  //   if(window.ethereum) {
+  //     await window.ethereum.enable();
+  //     try{
+  //       let account = await window.ethereum.selectedAddress;
+  //       return account;
+  //     }catch(e) {
+  //       alert('Error occurred')
+  //       return;
+  //     }
+  //   }else{
+  //     alert('Please install a crypto wallet');
+  //     return;
+  //   }
+  // }
+
   return (
     <Container>
       <header className='d-flex flex-wrap align-items-center justify-content-center justify-content-md-between py-3 mb-4 border-bottom'>
@@ -20,11 +37,11 @@ const Menu = () => {
           </ul>
 
           <div className='col-md-3 text-end'>
-            {/* <LinkContainer to='/'>
-              <button type='button' className='btn btn-outline-primary me-2'>
-                Documentation
+            <LinkContainer to='/'>
+              <button type='button' className='btn btn-outline-primary me-2' onClick={connectWallet}>
+                Connect
               </button>
-            </LinkContainer> */}
+            </LinkContainer>
           </div>
         </Nav>
       </header>
