@@ -115,21 +115,6 @@ const Home = () => {
     }
 	}
 
-  const connectWallet = async () => {
-    if(window.ethereum) {
-      await window.ethereum.enable();
-      try{
-        let account = await window.ethereum.selectedAddress;
-        return account;
-      }catch(e) {
-        alert('Error occurred')
-        return;
-      }
-    }else{
-      alert('Please install a crypto wallet');
-      return;
-    }
-  }
 
 	const listItems = items.map((item, index) =>
 

@@ -1,7 +1,9 @@
 import { Nav, Container } from 'react-bootstrap'
 import { LinkContainer } from 'react-router-bootstrap'
+import { connectWallet } from '../constants'
 
 const Menu = () => {
+
   return (
     <Container>
       <header className='d-flex flex-wrap align-items-center justify-content-center justify-content-md-between py-3 mb-4 border-bottom'>
@@ -20,11 +22,11 @@ const Menu = () => {
           </ul>
 
           <div className='col-md-3 text-end'>
-            {/* <LinkContainer to='/'>
-              <button type='button' className='btn btn-outline-primary me-2'>
-                Documentation
+            <LinkContainer to='/'>
+              <button type='button' className='btn btn-outline-primary me-2' onClick={connectWallet}>
+                Connect
               </button>
-            </LinkContainer> */}
+            </LinkContainer>
           </div>
         </Nav>
       </header>

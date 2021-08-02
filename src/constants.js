@@ -17,24 +17,6 @@ export const onNetworkUpdate = (callback) => {
   networkCallbacks.push(callback)
 }
 
-export async function connectWallet() {
-  if (!window.web3) {
-    //web3Provider = new PortisProvider({
-      // Put your Portis API key here
-    //})
-    const errorMessage = 'Please install a crypto wallet'
-    alert(errorMessage)
-    throw new Error(errorMessage)
-  } else if (window.ethereum) {
-    window.ethereum.enable()
-  } else {
-    const errorMessage = 'You need an Ethereum wallet to interact with this marketplace. Unlock your wallet, get MetaMask.io or Portis on desktop, or get Trust Wallet or Coinbase Wallet on mobile.'
-    alert(errorMessage)
-    throw new Error(errorMessage)
-  }
-  networkCallbacks.map((c) => c(web3Provider))
-}
-
 export function toUnitAmount(baseAmount, tokenContract = null) {
   const decimals = tokenContract && tokenContract.decimals != null
     ? tokenContract.decimals
@@ -107,3 +89,20 @@ export async function getEthBalance() {
   const ethBalance = web3.utils.fromWei(weiBalance,"ether");
   return ethBalance;
 }
+
+export async function connectWallet() {
+  if(window.ethereum) {
+    await window.ethereum.enable();
+    try{
+      let account = await window.ethereum.selectedAddress;
+      return account;
+    }catch(e) {
+      alert('Error occurred')
+      return;
+    }
+  }else{
+    alert('Please install a crypto wallet');
+    return;
+  }
+}
+
