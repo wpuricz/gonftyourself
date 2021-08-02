@@ -3,21 +3,6 @@ import { LinkContainer } from 'react-router-bootstrap'
 import { connectWallet } from '../constants'
 
 const Menu = () => {
-  // const connectWallet = async () => {
-  //   if(window.ethereum) {
-  //     await window.ethereum.enable();
-  //     try{
-  //       let account = await window.ethereum.selectedAddress;
-  //       return account;
-  //     }catch(e) {
-  //       alert('Error occurred')
-  //       return;
-  //     }
-  //   }else{
-  //     alert('Please install a crypto wallet');
-  //     return;
-  //   }
-  // }
 
   return (
     <Container>
