@@ -18,11 +18,11 @@ const Home = () => {
 	const [collectionImage, setCollectionImage] = useState([]);
 	const [collectionDescription, setCollectionDescription] = useState([]);
 	const [selectedName, setSelectedName] = useState([]);
-	const [selectedPrice, setSelectedPrice] = useState([]);
-	const [selectedIndex, setSelectedIndex] = useState([]);
-	const [show, setShow] = useState(false);
+  const [selectedPrice, setSelectedPrice] = useState([]);
+  const [selectedIndex, setSelectedIndex] = useState([]);
+  const [show, setShow] = useState(false);
 
-	let seaport = null;
+  let seaport = null;
 
 	useEffect(async () => {
 		//await fetchList();
@@ -103,132 +103,126 @@ const Home = () => {
 	}
 
 	const buyPressed = async (index) => {
-		// check if a wallet exists, if not then go to wallet page
-		const currentPrice = getPriceFromAsset(items[index].sell_orders);
-		setSelectedPrice(currentPrice);
-		setSelectedName(items[index].name);
-		setSelectedIndex(index);
-
-		const account = await connectWallet();
-		if (account) {
-			handleShow();
-		}
+    // check if a wallet exists, if not then go to wallet page
+    const currentPrice = getPriceFromAsset(items[index].sell_orders);
+    setSelectedPrice(currentPrice);
+    setSelectedName(items[index].name);
+    setSelectedIndex(index);
+    
+    const account = await connectWallet();
+    if(account) {
+      handleShow();
+    }
 	}
 
 
 	const listItems = items.map((item, index) =>
 
-  <div class="row">  {/*Grid row start */ }
 
-			{/*  Grid column start */}
+		<div class="product-card">
+			<div class="product-image">
+				<a href={buildDetailUrl(item.asset_contract.address, item.token_id)} ><img src={item.image_preview_url} /></a>
+			</div>
+			<div class="product-info">
+				<h5><a href={buildDetailUrl(item.asset_contract.address, item.token_id)} >{item.name} </a></h5>
+				
 
-			<div class="col-md-4 mb-5">
+			
+				{
+					getPriceFromAsset(item.sell_orders) ?
 
-				{/* Card start  */}
-
-				<div class="">
-
-					<div class="view zoom overlay z-depth-2 rounded">
-					<div class="mask">
-						<img src={item.image_preview_url}><a href={buildDetailUrl(item.asset_contract.address, item.token_id)} ></a>
-							<div class="mask rgba-black-slight"></div>
-						</div>
-					
-					</div>
-
-					<div class="text-center pt-4">
-
-						<h5>{item.name}</h5>
-					</div>
-					{/* Card end */}
-
-
-				</div>
-				{/* Grid column  end */}
-
+						<button onClick={() => buyPressed(index)}>
+							Buy Price: {getPriceFromAsset(item.sell_orders)} ETH
+          </button>
+						:
+						<span></span>
+				}
+				<p />
+				
 			</div>
 		</div>
 
+
 	);
 
-	const handleClose = () => setShow(false);
-	const handleShow = () => setShow(true);
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
+  
+  const placeBid = async (amount) => {  
+    const index = selectedIndex;
+    if(!seaport) {
+      seaport = new OpenSeaPort(web3Provider, {
+        networkName: Network.Rinkeby
+      })
+    }
+    if(!seaport) {
+      alert('seaport still null')
+      return
+    }
+    const schemaName = items[index].asset_contract.schema_name;
+    
+    if(items[index].sell_orders[0].payment_token_contract.symbol === 'ETH') {
+      alert('Only bids are supported now');
+      return;
+    }
 
-	const placeBid = async (amount) => {
-		const index = selectedIndex;
-		if (!seaport) {
-			seaport = new OpenSeaPort(web3Provider, {
-				networkName: Network.Rinkeby
-			})
-		}
-		if (!seaport) {
-			alert('seaport still null')
-			return
-		}
-		const schemaName = items[index].asset_contract.schema_name;
-
-		if (items[index].sell_orders[0].payment_token_contract.symbol === 'ETH') {
-			alert('Only bids are supported now');
-			return;
-		}
-
-		let account = await window.ethereum.selectedAddress;
-		const currentPrice = getPriceFromAsset(items[index].sell_orders);
-
-		if (amount != null) {
-
-			const tokenAddress = items[index].asset_contract.address
+    let account = await window.ethereum.selectedAddress;
+    const currentPrice = getPriceFromAsset(items[index].sell_orders);
+    
+    if (amount != null) {
+      
+      const tokenAddress = items[index].asset_contract.address
 			const tokenId = items[index].token_id;
-			if (!seaport) {
-				alert('seaport null')
-				return
-			}
-			let offer;
-			try {
-				await seaport.createBuyOrder({
-					asset: {
-						tokenId,
-						tokenAddress,
-						schemaName // WyvernSchemaName. If omitted, defaults to 'ERC721'. Other options include 'ERC20' and 'ERC1155'
-					},
-					accountAddress: account,
-					// Value of the offer, in units of the payment token (or wrapped ETH if none is specified):
-					startAmount: amount,
-				})
-				alert('successful bid on item. Price: ' + amount + ' check the opensea link to view bid');
-			} catch (e) {
-				alert('error on buy:' + JSON.stringify(e.message));
-				console.log(JSON.stringify(e.message));
-			}
-		}
-	}
+      if(!seaport) {
+        alert('seaport null')
+        return
+      }
+      let offer;
+      try{
+        await seaport.createBuyOrder({
+        asset: {
+          tokenId,
+          tokenAddress,
+          schemaName // WyvernSchemaName. If omitted, defaults to 'ERC721'. Other options include 'ERC20' and 'ERC1155'
+        },
+        accountAddress: account,
+        // Value of the offer, in units of the payment token (or wrapped ETH if none is specified):
+        startAmount: amount,
+      })
+      alert('successful bid on item. Price: ' + amount + ' check the opensea link to view bid');
+      }catch(e) {
+        alert('error on buy:' + JSON.stringify(e.message));
+        console.log(JSON.stringify(e.message));
+      }
+    }
+  }
 
 	return (
-
+    
 
 		<div class="collection">
-			<BidModal
-				show={show}
-				handleClose={handleClose}
-				placeBid={placeBid}
-				price={selectedPrice}
-				name={selectedName}
-			/>
+      <BidModal 
+        show={show} 
+        handleClose={handleClose} 
+        placeBid={placeBid} 
+        price={selectedPrice} 
+        name={selectedName}
+      />
 			<div>
-				<img src={collectionBannerImage} />
-
-				<h3 class="post-title">{collectionName}</h3>
-
-
-				<img class="icon" src={collectionImage} align="left" />
-
-				{collectionDescription}
-
+			<img src={collectionBannerImage}  />
+			
+			<h3 class="post-title">{collectionName}</h3>	
+			
+			
+			<img class="icon" src={collectionImage} align="left"/>
+		
+						{collectionDescription}
+				
 			</div>
 			<div>
-				<section >
-					{listItems}
-				</section>
+			<section class="products">
+				{listItems}
+			</section>
 			</div>
 		</div>
 	)
