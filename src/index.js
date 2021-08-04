@@ -1,8 +1,11 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import 'bootstrap/dist/css/bootstrap.css'
+import './css/bootstrap.css'
 
-import './index.css';
+import './css/index.css';
+import './css/all.css';
+import './css/mdb-ecommerce.css';
+import './css/mdb-pro.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 
