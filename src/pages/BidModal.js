@@ -16,8 +16,12 @@ const BidModal = (props) => {
         alert('please enter number')
       }
       const wethBalance = await getWethBalance();
+      console.log('weth bal:' + wethBalance);
       if(wethBalance < bid) {
         setScreenId(1); // detect here if we should show the uniswap screen
+      }else{
+        closeModal();
+        placeBid(bid);
       }
 
     }else{  // screen === 1
