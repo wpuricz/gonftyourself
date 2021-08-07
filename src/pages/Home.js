@@ -103,16 +103,16 @@ const Home = () => {
 	}
 
 	const buyPressed = async (index) => {
-    // check if a wallet exists, if not then go to wallet page
-    const currentPrice = getPriceFromAsset(items[index].sell_orders);
-    setSelectedPrice(currentPrice);
-    setSelectedName(items[index].name);
-    setSelectedIndex(index);
-    
-    const account = await connectWallet();
-    if(account) {
-      handleShow();
-    }
+		// check if a wallet exists, if not then go to wallet page
+		const currentPrice = getPriceFromAsset(items[index].sell_orders);
+		setSelectedPrice(currentPrice);
+		setSelectedName(items[index].name);
+		setSelectedIndex(index);
+		
+		const account = await connectWallet();
+		if(account) {
+			handleShow();
+		}
 	}
 
 
@@ -131,9 +131,9 @@ const Home = () => {
 				{
 					getPriceFromAsset(item.sell_orders) ?
 
-						<button onClick={() => buyPressed(index)}>
+						<Button onClick={() => buyPressed(index)}>
 							Buy Price: {getPriceFromAsset(item.sell_orders)} ETH
-          </button>
+          </Button>
 						:
 						<span></span>
 				}
