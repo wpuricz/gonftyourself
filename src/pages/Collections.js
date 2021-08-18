@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { Button } from 'react-bootstrap'
 import { useEffect, useState } from 'react';
-import { web3Provider, connectWallet, onNetworkUpdate, OPENSEA_JS_URL, GITHUB_URL, toUnitAmount } from '../constants.js';
+import { web3Provider, connectWallet, onNetworkUpdate, toUnitAmount } from '../constants.js';
 import { OpenSeaPort, Network } from 'opensea-js';
 import { OrderSide } from 'opensea-js/lib/types';
 
