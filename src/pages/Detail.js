@@ -3,10 +3,12 @@ import Meta from "../components/Meta";
 import React from "react";
 import axios from "axios";
 import { useEffect, useState } from "react";
+import { Button } from "react-bootstrap";
 import queryString from "query-string";
 import { useLocation } from "react-router-dom";
 import moment from "moment";
-import { toUnitAmount, OPENSEA_URL } from "../constants";
+import { toUnitAmount, OPENSEA_URL, getPriceFromAsset, connectWallet } from "../constants";
+import BidModal from "./BidModal";
 
 const LONG_DATE_FORMAT = "dddd, MMMM Do, YYYY, h:mm:ss a";
 
@@ -18,6 +20,10 @@ const Detail = (props) => {
   const [assetDetails, setAssetDetails] = useState([]);
   const [properties, setProperties] = useState([]);
   const imageSuffix = window.screen.width > 1024 ? "=w600" : "";
+  const [show, setShow] = useState(false);
+  
+  const [selectedName, setSelectedName] = useState([]);
+  const [selectedPrice, setSelectedPrice] = useState([]);
   // last_sale
   // top_bid - done
   // min_price is price
@@ -51,8 +57,34 @@ const Detail = (props) => {
     });
   };
 
+  // Buy button event and modal show/close handlers
+  const buyPressed = async () => {
+    // check if a wallet exists, if not then go to wallet page
+    const currentPrice = getPriceFromAsset(assetDetails.orders);
+    setSelectedPrice(currentPrice);
+    setSelectedName(assetDetails.name);
+    //setSelectedIndex(index);
+
+    const account = await connectWallet();
+    if (account) {
+      handleShow();
+    }
+  };
+
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
+
   return (
     <div class="row">
+      <BidModal
+        show={show}
+        handleClose={handleClose}
+        price={selectedPrice}
+        name={selectedName}
+        assetContractAddress={asset_contract_address}
+        tokenId={token_id}
+        schema={assetDetails.schema_name}
+      />
       <div class="col-xl-6 col-lg-6 col-md-8 col-sm-12 mx-auto detail-bottom-margin detail-image-margin">
         <img src={assetDetails.image_url + imageSuffix}></img>
       </div>
@@ -96,6 +128,13 @@ const Detail = (props) => {
             ? "Min Bid: " + getMaxBid(assetDetails.orders, 1) + " ETH"
             : ""}
         </div>
+        {getPriceFromAsset(assetDetails.orders) ? (
+          <Button onClick={() => buyPressed()}>
+            Buy Price: {getPriceFromAsset(assetDetails.orders)} ETH
+          </Button>
+        ) : (
+          <span></span>
+        )}
       </div>
     </div>
   );

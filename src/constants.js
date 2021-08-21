@@ -110,3 +110,15 @@ export async function connectWallet() {
   }
 }
 
+export const getPriceFromAsset = (sellOrder) => {
+  if (!sellOrder || !sellOrder[0]) return null; // also check created_date and closing_date to see if active
+  // or "expiration_time": 1628994402
+  const price = toUnitAmount(
+    sellOrder[0].base_price,
+    sellOrder[0].payment_token_contract
+  );
+  return parseFloat(price).toLocaleString(undefined, {
+    minimumSignificantDigits: 1,
+  });
+};
+
