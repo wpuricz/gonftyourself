@@ -1,10 +1,11 @@
 import { useState } from 'react';
-import { Button, Modal, Form, CloseButton } from 'react-bootstrap'
-import { getWethBalance } from '../constants';
+import { Button, Modal, Form } from 'react-bootstrap'
+import { getWethBalance } from '../utils/Wallet';
+import * as Sea from '../services/Sea'
 
 const BidModal = (props) => {
   
-  const { handleClose, show, placeBid, price, name} = props;
+  const { handleClose, show, price, name, assetContractAddress, tokenId, schema} = props;
   const [bid,setBid] = useState();
   const [screenId, setScreenId] = useState(0);
   
@@ -20,23 +21,20 @@ const BidModal = (props) => {
       if(wethBalance < bid) {
         setScreenId(1); // detect here if we should show the uniswap screen
       }else{
+        console.log(`bid:${bid}, schema:${schema}, contract:${assetContractAddress}, token:${tokenId}`);
+        await Sea.placeBid(bid, schema, assetContractAddress, tokenId);
         closeModal();
-        placeBid(bid);
       }
 
     }else{  // screen === 1
+      await Sea.placeBid(bid, schema, assetContractAddress, tokenId);
       closeModal();
-      placeBid(bid);
     }
   }
 
   const closeModal = () => {
     setScreenId(0);
     handleClose();
-  }
-
-  const uniswapEvent = (e) => {
-
   }
 
   const formComponent = () => {
@@ -55,7 +53,8 @@ const BidModal = (props) => {
 
   const uniswapComponent = () => {
     return (
-      <iframe
+      <iframe 
+        title="uniswap"
         src="https://app.uniswap.org/#/swap?outputCurrency=0xc778417E063141139Fce010982780140Aa0cD5Ab&inputCurrency=ETH&exactAmount=0.1"
         height="660px"
         width="100%"
@@ -65,7 +64,6 @@ const BidModal = (props) => {
     )
   }
 
-
   return (
     <Modal
         show={show}
@@ -73,7 +71,7 @@ const BidModal = (props) => {
         backdrop="static"
         keyboard={false}
     >
-        <Modal.Header closeButton>
+        <Modal.Header>
           <Modal.Title>Place Bid</Modal.Title>
         </Modal.Header>
         <Modal.Body>

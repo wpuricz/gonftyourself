@@ -10,6 +10,7 @@
     "bignumber.js": "^9.0.1",
     "bootstrap": "^5.0.0-beta3",
     "express": "^4.17.1",
+    "moment": "^2.29.1",
     "opensea-js": "^1.1.11",
     "react": "^17.0.2",
     "react-bootstrap": "^1.5.2",

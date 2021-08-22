@@ -13,7 +13,7 @@ import Collections from './pages/Collections'
 const App = () => {
   return (
     <Layout>
-      <Container>
+      <Container fluid={true}>
         <Switch>
           <Route path='/' component={Home} exact />
           <Route path='/about' component={About} />

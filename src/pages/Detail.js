@@ -1,65 +1,129 @@
-import Header from '../components/Header'
-import Meta from '../components/Meta'
-import React from 'react';
-import axios from 'axios';
-import { useEffect, useState } from 'react';
-import queryString from 'query-string'
-import { useLocation } from 'react-router-dom'
+import React from "react";
+import { useEffect, useState } from "react";
+import { Button } from "react-bootstrap";
+import moment from "moment";
+import '../styles/detail.css'
+import { connectWallet } from "../utils/Wallet";
+import BidModal from "./BidModal";
+import * as Utils from "../utils/Utils";
+import * as Sea from "../services/Sea"; 
+
+const LONG_DATE_FORMAT = "dddd, MMMM Do, YYYY, h:mm:ss a";
 
 const Detail = (props) => {
-	// page contents
-	const pageTitle = 'Detail'
-	const pageDescription = 'Welcome to Go! NFT Yourself'
-	const params = new URLSearchParams(window.location.search);
-	const asset_contract_address = params.get('asset_contract_address')
-	const token_id = params.get('token_id')
-	const [assetDetails, setAssetDetails] = useState([])
-	const [properties,  setProperties] = useState([]);
-	const imageSuffix = (window.screen.width > 1024) ? '=w600' : '';
+  const params = new URLSearchParams(window.location.search);
+  const asset_contract_address = params.get("asset_contract_address");
+  const token_id = params.get("token_id");
+  const imageSuffix = window.screen.width > 1024 ? "=w600" : "";
 
-	useEffect(() => {
-		
-		var url = 'https://rinkeby-api.opensea.io/api/v1/asset/'+asset_contract_address + '/' + token_id;
-		console.log(`fetching data + ${url}`)
-		axios.get(url)
-            .then(res => {
-                setAssetDetails(res.data);
-				let properties = res.data.traits;
-				setProperties(properties);
-				console.log(JSON.stringify(res.data.collection.payment_tokens))
-            })
-	}, [])
+  const [assetDetails, setAssetDetails] = useState([]);
+  const [properties, setProperties] = useState([]);
+  const [show, setShow] = useState(false);
+  const [selectedName, setSelectedName] = useState([]);
+  const [selectedPrice, setSelectedPrice] = useState([]);
+  const [schema, setSchema] = useState([]);
 
-	
-	const listProperties = properties.map((item, index) =>
+  useEffect(() => {
+    async function fetchData() {
+      const data = await Sea.fetchAsset(asset_contract_address, token_id);
+      setAssetDetails(data);
+      //console.log(JSON.stringify(assetDetails));
+      let properties = data.traits;
+      setProperties(properties);
+      setSchema(data.asset_contract.schema_name);
+    }
+    fetchData();
+  }, []);
 
-<div>
-  <div ><span class="flag-icon flag-icon-gb"></span> {item.trait_type}: {item.value}</div>
-   
-</div>
+  const listProperties = properties.map((item, index) => (
+    <div>
+      <div>
+        <span className="flag-icon flag-icon-gb"></span> {item.trait_type}:{" "}
+        {item.value}
+      </div>
+    </div>
+  ));
 
+  // Buy button event and modal show/close handlers
+  const buyPressed = async () => {
+    // TODO: check if a wallet exists, if not then go to wallet page
 
+    if (assetDetails.orders[0].payment_token_contract.symbol === "ETH") {
+      alert("Only bids are supported now");
+      return;
+    }
+    const currentPrice = Utils.getPriceFromAsset(assetDetails.orders);
+    setSelectedPrice(currentPrice);
+    setSelectedName(assetDetails.name);
+    const account = await connectWallet();
+    if (account) {
+      handleShow();
+    }
+  };
 
-	);
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
 
-return (
-		<div class="row">
-			<div class="col-xl-6 col-lg-6 col-md-8 col-sm-12 mx-auto detail-bottom-margin detail-image-margin">
-				<img src={assetDetails.image_url + imageSuffix}></img>
+  return (
+    <div class="detail-page-wrapper">
+      <BidModal
+        show={show}
+        handleClose={handleClose}
+        price={selectedPrice}
+        name={selectedName}
+        assetContractAddress={asset_contract_address}
+        tokenId={token_id}
+        schema={schema}
+      />
+
+     <div>
+				<img width="100%" src={assetDetails.image_url + imageSuffix} alt=""></img>
 			</div>
-			<div class="col-xl-6 col-lg-6 col-md-8 col-sm-12 mx-auto detail-bottom-margin">
+			<div>
 				<h1 class="detail-bottom-margin">{assetDetails.name}</h1>
 				<h4 class="detail-bottom-margin">Creator {assetDetails.creator && assetDetails.creator.user ? assetDetails.creator.user.username: ''}    Owner {assetDetails.owner && assetDetails.owner.user ? assetDetails.owner.user.username : ''}</h4>
-				<div>{assetDetails.description}</div><br/>
+				<div class="text-with-line-breaks">{assetDetails.description}</div><br/>
 				<div align="left"><h2>Properties</h2></div>
 				
 {listProperties}
 
 				
+        <div className="sale-ends">
+          {assetDetails.orders &&
+          assetDetails.orders[0] &&
+          assetDetails.orders[0].closing_date
+            ? "Sale ends: " +
+              moment(assetDetails.orders[0].closing_date).format(
+                LONG_DATE_FORMAT
+              )
+            : ""}
+        </div>
+        <div className="sale-ends">
+          {assetDetails.orders && assetDetails.orders[0]
+            ? "Highest Bid: " +
+              Utils.getMaxBidFromOrder(assetDetails.orders, 0) +
+              " ETH"
+            : ""}
+        </div>
+        <div className="sale-ends">
+          {assetDetails.orders && assetDetails.orders[0]
+            ? "Min Bid: " +
+              Utils.getMaxBidFromOrder(assetDetails.orders, 1) +
+              " ETH"
+            : ""}
+        </div>
+        {Utils.getPriceFromAsset(assetDetails.orders) ? (
+          <Button onClick={() => buyPressed()}>
+            Bid Price: {Utils.getPriceFromAsset(assetDetails.orders)} ETH
+          </Button>
+        ) : (
+          <span></span>
+        )}
 			</div>
-		</div>
-	)
-
-
-}
+		
+      </div>
+    
+    
+  );
+};
 export default Detail;
