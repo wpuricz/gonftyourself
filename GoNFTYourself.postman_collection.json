@@ -1,0 +1,73 @@
+{
+	"info": {
+		"_postman_id": "415c9413-bb9f-436b-8ec9-7576f1a072d1",
+		"name": "GoNFTYourself",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Get Collection",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://rinkeby-api.opensea.io/api/v1/assets?order_direction=desc&offset=0&limit=20&collection=carbureted",
+					"protocol": "https",
+					"host": [
+						"rinkeby-api",
+						"opensea",
+						"io"
+					],
+					"path": [
+						"api",
+						"v1",
+						"assets"
+					],
+					"query": [
+						{
+							"key": "order_direction",
+							"value": "desc"
+						},
+						{
+							"key": "offset",
+							"value": "0"
+						},
+						{
+							"key": "limit",
+							"value": "20"
+						},
+						{
+							"key": "collection",
+							"value": "carbureted"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Asset",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://rinkeby-api.opensea.io/api/v1/asset/0x88b48f654c30e99bc2e4a1559b4dcf1ad93fa656/63333724470934355580640922296556645842113799701785257661879106058011742830593",
+					"protocol": "https",
+					"host": [
+						"rinkeby-api",
+						"opensea",
+						"io"
+					],
+					"path": [
+						"api",
+						"v1",
+						"asset",
+						"0x88b48f654c30e99bc2e4a1559b4dcf1ad93fa656",
+						"63333724470934355580640922296556645842113799701785257661879106058011742830593"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
