@@ -11,16 +11,9 @@ const Collections = () => {
 	// page content
 
 	const [items, setItems] = useState([]);
+	const [collectionResponse, setCollectionResponse] = useState([]);
 	const [accountAddress, setAccountAddress] = useState([]);
-	const [collectionName, setCollectionName] = useState([]);
-	const [collectionBannerImage, setCollectionBannerImage] = useState([]);
-	const [collectionFeatureImage, setCollectionFeatureImage] = useState([]);
-	const [collectionImage, setCollectionImage] = useState([]);
-	const [collectionDescription, setCollectionDescription] = useState([]);
-	const [selectedName, setSelectedName] = useState([]);
-  const [selectedPrice, setSelectedPrice] = useState([]);
-  const [selectedIndex, setSelectedIndex] = useState([]);
-  const [show, setShow] = useState(false);
+	
 
   let seaport = null;
 
@@ -36,6 +29,18 @@ const Collections = () => {
 		
 		
 	}, [])
+	function _getCollections(collectionItems) {
+            let collectionResults = [];
+            collectionItems.forEach( (collectionName) => {
+	const url = "https://rinkeby-api.opensea.io/api/v1/assets?order_direction=desc&offset=0&limit=3&collection=" + collectionName
+                    let u = $.getJSON(url)
+                                     .done( (response) => { u =  response.data.assets; });
+                    collectionResults.push(u);
+            });
+			let collectionResponse = collectionResults;
+			setCollectionResponse(collectionResponse)	;
+            return {collectionResponse: collectionResults};
+    }
 
 	const onChangeAddress = () => {
 		//console.log('calling onChangeAddress')
@@ -58,24 +63,20 @@ const Collections = () => {
 
 	}
 
-	const fetchList = async (collection) => {
+	const fetchList = async.queue ((collection, callback) => {
 		const url = "https://rinkeby-api.opensea.io/api/v1/assets?order_direction=desc&offset=0&limit=3&collection=" + collection
 		console.log('fetching data for '+ collection )
 		try {
-			let response = await axios.get(url);
+			let response =  axios.get(url);
 			let items = response.data.assets;
 			setItems(items);
 
-			setCollectionBannerImage(items[0].collection.banner_image_url);
-			setCollectionFeatureImage(items[0].collection.featured_image);
-			setCollectionImage(items[0].collection.image_url);
-			setCollectionName(items[0].collection.name);
-			setCollectionDescription(items[0].collection.description);
+			
 			//console.log(response.data.assets);
 		} catch (err) {
 			//console.log('error fetching assets:' + err);
 		}
-	}
+	});
 
 	
 
