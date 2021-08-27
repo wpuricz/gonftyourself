@@ -1,6 +1,7 @@
 import { OpenSeaPort, Network } from "opensea-js";
 import { web3Provider, OPENSEA_URL, COLLECTION_NAME } from "../utils/constants";
 import axios from "axios";
+import * as Constants from '../utils/constants'
 
 let seaport = null;
 
@@ -39,7 +40,7 @@ export const placeBid = async (amount, schemaName, tokenAddress, tokenId) => {
 
   if (amount != null) {
     try {
-      await seaport.createBuyOrder({
+      const response = await seaport.createBuyOrder({
         asset: {
           tokenId,
           tokenAddress,
@@ -49,17 +50,29 @@ export const placeBid = async (amount, schemaName, tokenAddress, tokenId) => {
         // Value of the offer, in units of the payment token (or wrapped ETH if none is specified):
         startAmount: amount,
       });
-      alert(
-        "successful bid on item. Price: " +
-          amount +
-          " check the opensea link to view bid"
-      ); // TOOD: Return success instead of alert
+      console.log(JSON.stringify(response));
+      return;
     } catch (e) {
-      alert("error on buy:" + JSON.stringify(e.message));
-      console.log(JSON.stringify(e.message)); // TODO: Throw error instead of alert
+      console.log(`error status: ${e.status}`);
+      console.log('error:' + JSON.stringify(e.message));
+      if(e.message.includes('Buy order is not valid for auction')) {
+        throw Error(Constants.ORDER_ERROR_BID_NOT_VALID);
+      }else if(e.message.includes('Please cancel your higher bids first')) {
+        throw Error(Constants.ORDER_ERROR_HIGHER_BID);
+      }else if(e.message.includes('You declined to authorize your offer')) {
+        throw Error('Cancelled');
+      }
+      else{
+        throw Error(Constants.ORDER_ERROR_GENERAL);
+      }
     }
   }
 };
+
+// Invalid Price - shouldn't happen if we validate
+// General error - anything other than 400 or what we know about
+// You already have a higher bid
+// Insufficient Funds
 
 // const getOrderData = async () => {
 //   console.log("getting data");

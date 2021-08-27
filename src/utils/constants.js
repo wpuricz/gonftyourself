@@ -24,7 +24,9 @@ export let web3Provider = typeof web3 !== 'undefined'
 //   )
 // }
 
-
+export const ORDER_ERROR_BID_NOT_VALID = 'The price you specified is not valid';
+export const ORDER_ERROR_GENERAL = 'We were not able to process your bid';
+export const ORDER_ERROR_HIGHER_BID = 'You already have a higher bid';
 
 
 
