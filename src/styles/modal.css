@@ -4,3 +4,6 @@
 .successLabel {
     color: blue;
 }
+span.bid-footer * {
+    margin-right: 10px;
+}
