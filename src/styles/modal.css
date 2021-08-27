@@ -7,3 +7,13 @@
 span.bid-footer * {
     margin-right: 10px;
 }
+.button-align {
+    display: flex;
+        justify-content: flex-end;
+}
+
+.usd-align {
+    display: flex;
+        justify-content: flex-end;
+        float: right;
+}

@@ -4,7 +4,7 @@ import { Button } from "react-bootstrap";
 import moment from "moment";
 import '../styles/detail.css'
 import { connectWallet } from "../utils/Wallet";
-import BidModal from "./BidModal";
+import CheckoutModal from "./CheckoutModal";
 import * as Utils from "../utils/Utils";
 import * as Sea from "../services/Sea"; 
 
@@ -52,7 +52,7 @@ const Detail = (props) => {
       alert("Only bids are supported now");
       return;
     }
-    const currentPrice = Utils.getPriceFromAsset(assetDetails.orders);
+    const currentPrice = Utils.getMaxBidFromOrder(assetDetails.orders, 0);
     setSelectedPrice(currentPrice);
     setSelectedName(assetDetails.name);
     const account = await connectWallet();
@@ -66,7 +66,7 @@ const Detail = (props) => {
 
   return (
     <div class="detail-page-wrapper">
-      <BidModal
+      <CheckoutModal
         show={show}
         handleClose={handleClose}
         price={selectedPrice}
@@ -114,7 +114,7 @@ const Detail = (props) => {
         </div>
         {Utils.getPriceFromAsset(assetDetails.orders) ? (
           <Button onClick={() => buyPressed()}>
-            Bid Price: {Utils.getPriceFromAsset(assetDetails.orders)} ETH
+            Bid Price: {Utils.getMaxBidFromOrder(assetDetails.orders, 0)} ETH
           </Button>
         ) : (
           <span></span>

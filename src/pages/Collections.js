@@ -5,7 +5,7 @@ import { web3Provider, connectWallet, onNetworkUpdate, toUnitAmount } from '../u
 import { OpenSeaPort, Network } from 'opensea-js';
 import { OrderSide } from 'opensea-js/lib/types';
 
-import BidModal from './BidModal'
+import CheckoutModal from './CheckoutModal'
 
 const Collections = () => {
 	// page content

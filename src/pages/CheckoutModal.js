@@ -1,10 +1,10 @@
 import { useState } from "react";
-import { Button, Modal, Form, Spinner } from "react-bootstrap";
+import { Modal, Form, Spinner } from "react-bootstrap";
 import { getWethBalance } from "../utils/Wallet";
 import * as Sea from "../services/Sea";
 import "../styles/modal.css";
 
-const BidModal = (props) => {
+const CheckoutModal = (props) => {
   const {
     handleClose,
     show,
@@ -38,9 +38,6 @@ const BidModal = (props) => {
       } else {
         await placeBidOnOpensea();
       }
-    } else {
-      // screen === UNISWAP
-      await placeBidOnOpensea();
     }
   };
 
@@ -64,6 +61,7 @@ const BidModal = (props) => {
     handleClose();
     setErrorMessage(false);
     setIsSuccess(false);
+    setBid(null);
   };
 
   const errorView = () => {
@@ -74,9 +72,6 @@ const BidModal = (props) => {
     return (
       <div className="successLabel">
         Your bid has been successfully placed!{" "}
-        <Button variant="primary" size="sm" onClick={() => closeModal()}>
-          Close
-        </Button>
       </div>
     );
   };
@@ -84,6 +79,10 @@ const BidModal = (props) => {
   const formComponent = () => {
     return (
       <div>
+        <div>
+          WETH
+          <span className="usd-align">${bid}</span>
+        </div>
         <Form>
           <Form.Group controlId="formBasicEmail">
             <Form.Label>Bid Price</Form.Label>
@@ -123,27 +122,43 @@ const BidModal = (props) => {
             "Place Bid"
           ) : (
             <span>
-              <Button variant="link" onClick={() => setScreenId(Screen.BID)}>
+              <button
+                className=" btn btn-link"
+                onClick={() => setScreenId(Screen.BID)}
+              >
                 Back
-              </Button>
-              Convert ETH to WETH{" "}
+              </button>
+              Convert ETH to WETH
             </span>
           )}
         </Modal.Title>
+        <button
+          type="button"
+          className="btn-close button-align"
+          aria-label="Close"
+          onClick={closeModal}
+        ></button>
       </Modal.Header>
       <Modal.Body>
         {screenId === Screen.BID ? formComponent() : uniswapComponent()}
       </Modal.Body>
       <Modal.Footer>
-        {screenId === Screen.BID ? (
+        {screenId === Screen.BID && !isSuccess ? (
           <span className="bid-footer">
             <Spinner animation={isLoading ? "border" : "none"} />
-            <Button variant="secondary" onClick={closeModal}>
-              Cancel
-            </Button>
-            <Button variant="primary" onClick={bidPressed} disabled={isLoading}>
+            <button
+              className="btn btn-outline-primary"
+              onClick={() => setScreenId(Screen.UNISWAP)}
+            >
+              Convert to ETH
+            </button>
+            <button
+              className="btn btn-primary"
+              onClick={bidPressed}
+              disabled={isLoading}
+            >
               Place Bid
-            </Button>
+            </button>
           </span>
         ) : (
           ""
@@ -153,4 +168,4 @@ const BidModal = (props) => {
   );
 };
 
-export default BidModal;
+export default CheckoutModal;
