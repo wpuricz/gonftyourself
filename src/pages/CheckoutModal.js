@@ -3,7 +3,8 @@ import { Modal, Form, Spinner } from "react-bootstrap";
 import { getWethBalance } from "../utils/Wallet";
 import * as Sea from "../services/Sea";
 import "../styles/modal.css";
-
+import WertWidget from '@wert-io/widget-initializer';
+//https://github.com/wert-io/widget-initializer/blob/master/index.js
 const CheckoutModal = (props) => {
   const {
     handleClose,
@@ -23,6 +24,7 @@ const CheckoutModal = (props) => {
   const Screen = {
     BID: 0,
     UNISWAP: 1,
+    WERT: 2
   };
 
   const bidPressed = async () => {
@@ -113,6 +115,28 @@ const CheckoutModal = (props) => {
       />
     );
   };
+
+  const wertComponent = () => {
+    const wertWidgetContents = { 
+      containerId: "wert-widget",
+      partner_id: "01FC5PKC47FN6PX0MEGTVDJKP6",
+      origin: "https://sandbox.wert.io",
+      commodities: "ETH" 
+    };
+    const wertWidget = new WertWidget(wertWidgetContents);
+    const iframeSrc = wertWidget.getEmbedUrl();
+
+    return (
+      <iframe
+        title="wert"
+        src={iframeSrc}
+        height="660px"
+        width="100%"
+        style={{'borderRadius':10 }}
+        id="myId"
+      />
+    )
+  }
 
   return (
     <Modal show={show} onHide={closeModal} backdrop="static" keyboard={false}>

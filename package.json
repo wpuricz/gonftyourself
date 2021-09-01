@@ -6,6 +6,7 @@
     "@testing-library/jest-dom": "^5.11.10",
     "@testing-library/react": "^11.1.0",
     "@testing-library/user-event": "^12.8.3",
+    "@wert-io/widget-initializer": "^0.1.1",
     "axios": "^0.21.1",
     "bignumber.js": "^9.0.1",
     "bootstrap": "^5.0.0-beta3",
