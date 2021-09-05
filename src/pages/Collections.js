@@ -9,7 +9,7 @@ import CheckoutModal from './CheckoutModal'
 
 const Collections = () => {
 	// page content
-
+	const [collectionResponse, setCollectionResponse] = useState([]);
 	const [items, setItems] = useState([]);
 	const [accountAddress, setAccountAddress] = useState([]);
 	const [collectionName, setCollectionName] = useState([]);
@@ -29,11 +29,12 @@ const Collections = () => {
 		onChangeAddress();
 	const collectionItems = ['carbureted', 'nycmoments','jersey-shore'];
 	for (let i = 0; i < collectionItems.length; i++) {
-		console.log(collectionItems[i]);
+		//console.log(collectionItems[i]);
   		fetchList(collectionItems[i]);
 }
 
-		
+		//console.log(collectionResponse);
+		setCollectionResponse(collectionResponse);
 		
 	}, [])
 
@@ -50,22 +51,27 @@ const Collections = () => {
 			}
 
 		})
-	}
+			}
 
 	const buildDetailUrl = (assetAddress, tokenId) => {
 		//console.log(" asset address " + assetAddress);
 		return '/detail?asset_contract_address=' + assetAddress + '&token_id=' + tokenId;
 
 	}
+	const buildCollectionUrl = (collection) => {
+		//console.log(" asset address " + assetAddress);
+		return '/home?collection=' + collection;
 
-	const fetchList = async (collection) => {
-		const url = "https://rinkeby-api.opensea.io/api/v1/assets?order_direction=desc&offset=0&limit=3&collection=" + collection
+	}
+
+	const fetchList =  async collection => {
+		const url = "https://rinkeby-api.opensea.io/api/v1/assets?order_direction=desc&offset=0&limit=1&collection=" + collection
 		console.log('fetching data for '+ collection )
 		try {
 			let response = await axios.get(url);
 			let items = response.data.assets;
 			setItems(items);
-
+			collectionResponse.push(items);
 			setCollectionBannerImage(items[0].collection.banner_image_url);
 			setCollectionFeatureImage(items[0].collection.featured_image);
 			setCollectionImage(items[0].collection.image_url);
@@ -76,13 +82,18 @@ const Collections = () => {
 			//console.log('error fetching assets:' + err);
 		}
 	}
+ 
+	const testResponse =collectionResponse.map((subItems, sIndex) => 
+           
+			 
+          
+         
 
-	
-
-	const listItems = items.map((item, index) =>
+	 subItems.map((item, index) =>
 
 
 		<div class="product-card">
+			<a href={buildCollectionUrl(item.collection.name)}>{item.collection.name}</a>
 			<div class="product-image">
 				<a href={buildDetailUrl(item.asset_contract.address, item.token_id)} ><img src={item.image_preview_url} /></a>
 			</div>
@@ -97,7 +108,7 @@ const Collections = () => {
 		</div>
 
 
-	);
+	));
 
   
 	return (
@@ -108,7 +119,10 @@ const Collections = () => {
 			
 			<div>
 			<section class="products">
-				{listItems}
+			
+				
+				 {testResponse}
+        
 			</section>
 			</div>
 		</div>
