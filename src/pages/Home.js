@@ -4,6 +4,8 @@ import { web3Provider } from "../utils/constants.js";
 import { OpenSeaPort, Network } from "opensea-js";
 import * as Sea from "../services/Sea";
 
+
+
 const Home = () => {
   const [items, setItems] = useState([]);
   const [accountAddress, setAccountAddress] = useState([]);
@@ -42,7 +44,9 @@ const Home = () => {
 
   const fetchList = async () => {
     try {
-      let data = await Sea.fetchCollection();
+	  const params = new URLSearchParams(window.location.search);
+console.log(params);
+      let data = await Sea.fetchCollection(params.get('collection'));
       let items = data.assets;
       setItems(items);
 

@@ -2,12 +2,19 @@ import { OpenSeaPort, Network } from "opensea-js";
 import { web3Provider, OPENSEA_URL, COLLECTION_NAME } from "../utils/constants";
 import axios from "axios";
 import * as Constants from '../utils/constants'
+import {collectionName} from '../pages/Home'
 
 let seaport = null;
 
-export const fetchCollection = async () => {
+
+export const fetchCollection = async (collectionName) => {
+	if(!collectionName){
+		collectionName = {COLLECTION_NAME};
+	}
+	
+	console.log(' collectin name ' + collectionName);
   const url =
-      `${OPENSEA_URL}/api/v1/assets?order_direction=desc&offset=0&limit=20&collection=${COLLECTION_NAME}`;
+      `${OPENSEA_URL}/api/v1/assets?order_direction=desc&offset=0&limit=20&collection=${collectionName}`;
     console.log("fetching data");
     try {
       let response = await axios.get(url);
@@ -16,7 +23,6 @@ export const fetchCollection = async () => {
       throw error;
     }
 };
-
 export const fetchAsset = async (assetContractAddress, tokenId) => {
   const url = `${OPENSEA_URL}/api/v1/asset/${assetContractAddress}/${tokenId}`;
   try {

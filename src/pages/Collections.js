@@ -93,7 +93,7 @@ const Collections = () => {
 
 
 		<div class="product-card">
-			<a href={buildCollectionUrl(item.collection.name)}>{item.collection.name}</a>
+			<a href={buildCollectionUrl(item.collection.slug)}>{item.collection.name}</a>
 			<div class="product-image">
 				<a href={buildDetailUrl(item.asset_contract.address, item.token_id)} ><img src={item.image_preview_url} /></a>
 			</div>
