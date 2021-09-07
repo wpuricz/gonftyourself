@@ -28,7 +28,7 @@ const Collections = () => {
 	useEffect(async () => {
 	
 		onChangeAddress();
-	const collectionItems = ['carbureted', 'nycmoments','jersey-shore', 'ooplace-collections-v2', 'toabs','xarb-io','cryptopunk','projectnft'];
+	const collectionItems = ['carbureted', 'nycmoments','jersey-shore', 'ooplace-collections-v2', 'toabs','xarb-io','cryptopunk','projectnft','catnfttest5','youyan','pixelmeows','bresserc'];
 	for (let i = 0; i < collectionItems.length; i++) {
 		//console.log(collectionItems[i]);
   		fetchList(collectionItems[i]);
