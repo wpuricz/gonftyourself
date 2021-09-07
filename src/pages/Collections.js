@@ -6,6 +6,7 @@ import { OpenSeaPort, Network } from 'opensea-js';
 import { OrderSide } from 'opensea-js/lib/types';
 
 import CheckoutModal from './CheckoutModal'
+import Carousel from "../components/Carousel"
 
 const Collections = () => {
 	// page content
@@ -27,7 +28,7 @@ const Collections = () => {
 	useEffect(async () => {
 	
 		onChangeAddress();
-	const collectionItems = ['carbureted', 'nycmoments','jersey-shore'];
+	const collectionItems = ['carbureted', 'nycmoments','jersey-shore', 'ooplace-collections-v2', 'toabs','xarb-io','cryptopunk','projectnft'];
 	for (let i = 0; i < collectionItems.length; i++) {
 		//console.log(collectionItems[i]);
   		fetchList(collectionItems[i]);
@@ -90,42 +91,27 @@ const Collections = () => {
          
 
 	 subItems.map((item, index) =>
+<div>
+ <a href={buildCollectionUrl(item.collection.slug)}>{item.collection.name}</a>
+<img class="banner_image" src={item.collection.banner_image_url} />
 
-
-		<div class="product-card">
-			<a href={buildCollectionUrl(item.collection.slug)}>{item.collection.name}</a>
-			<div class="product-image">
-				<a href={buildDetailUrl(item.asset_contract.address, item.token_id)} ><img src={item.image_preview_url} /></a>
-			</div>
-			<div class="product-info">
-				<h5><a href={buildDetailUrl(item.asset_contract.address, item.token_id)} >{item.name} </a></h5>
-				
-
-			
-				<p />
-				
-			</div>
-		</div>
-
+</div>
 
 	));
 
   
 	return (
-    
+     <div>
+             <Carousel
+        show={4}
+        infiniteLoop
+        withIndicator
+      >
+{testResponse}
+            </Carousel>
+        </div>
 
-		<div class="collection">
-     
-			
-			<div>
-			<section class="products">
-			
-				
-				 {testResponse}
-        
-			</section>
-			</div>
-		</div>
+		
 	)
 }
 
