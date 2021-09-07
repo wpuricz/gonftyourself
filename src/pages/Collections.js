@@ -84,7 +84,7 @@ const Collections = () => {
 		}
 	}
  
-	const testResponse =collectionResponse.map((subItems, sIndex) => 
+	const carouselItems =collectionResponse.map((subItems, sIndex) => 
            
 			 
           
@@ -107,7 +107,7 @@ const Collections = () => {
         infiniteLoop
         withIndicator
       >
-{testResponse}
+{carouselItems}
             </Carousel>
         </div>
 
