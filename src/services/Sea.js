@@ -8,13 +8,15 @@ let seaport = null;
 
 
 export const fetchCollection = async (collectionName) => {
+	let colName =collectionName ;
 	if(!collectionName){
-		collectionName = {COLLECTION_NAME};
+		
+		colName = `${COLLECTION_NAME}`;
 	}
 	
-	console.log(' collectin name ' + collectionName);
+	console.log(' collectin name ' + colName);
   const url =
-      `${OPENSEA_URL}/api/v1/assets?order_direction=desc&offset=0&limit=20&collection=${collectionName.COLLECTION_NAME}`;
+      `${OPENSEA_URL}/api/v1/assets?order_direction=desc&offset=0&limit=20&collection=${colName}`;
     console.log("fetching data");
     try {
       let response = await axios.get(url);

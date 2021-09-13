@@ -28,7 +28,8 @@ const Collections = () => {
 	useEffect(async () => {
 	
 		onChangeAddress();
-	const collectionItems = ['carbureted', 'nycmoments','jersey-shore', 'ooplace-collections-v2', 'toabs','xarb-io','cryptopunk','projectnft','catnfttest5','youyan','pixelmeows','bresserc'];
+	const collectionItems = ['carbureted', 'nycmoments','jersey-shore',  'pixelmeows'];
+	//'toabs','xarb-io','cryptopunk','projectnft','catnfttest5','youyan','ooplace-collections-v2',,'land-dao-2','rocktest-v3'];
 	for (let i = 0; i < collectionItems.length; i++) {
 		//console.log(collectionItems[i]);
   		fetchList(collectionItems[i]);
@@ -91,7 +92,7 @@ const Collections = () => {
          
 
 	 subItems.map((item, index) =>
-<div>
+<div class="banner-carousel">
  <a href={buildCollectionUrl(item.collection.slug)}>{item.collection.name}</a>
 <img class="banner_image" src={item.collection.banner_image_url} />
 
@@ -103,7 +104,7 @@ const Collections = () => {
 	return (
      <div>
              <Carousel
-        show={4}
+        show={3}
         infiniteLoop
         withIndicator
       >

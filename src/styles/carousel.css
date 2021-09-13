@@ -61,6 +61,11 @@
     background-color: white;
     border: 1px solid #ddd;
 }
+.banner-carousel a {
+    color: #141515;
+    text-decoration: none;
+    
+}
 
 .left-arrow {
     left: 24px;
