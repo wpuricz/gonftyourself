@@ -94,7 +94,7 @@ const Collections = () => {
 	 subItems.map((item, index) =>
 <div class="banner-carousel">
  <a href={buildCollectionUrl(item.collection.slug)}>{item.collection.name}</a>
-<img class="banner_image" src={item.collection.banner_image_url} />
+<a href={buildCollectionUrl(item.collection.slug)}><img class="banner_image" src={item.collection.banner_image_url} /></a>
 
 </div>
 
