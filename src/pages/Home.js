@@ -32,7 +32,7 @@ const Collections = () => {
 	//'toabs','xarb-io','cryptopunk','projectnft','catnfttest5','youyan','ooplace-collections-v2',,'land-dao-2','rocktest-v3'];
 	for (let i = 0; i < collectionItems.length; i++) {
 		//console.log(collectionItems[i]);
-  		fetchList(collectionItems[i]);
+  		await fetchList(collectionItems[i]);
 }
 
 		//console.log(collectionResponse);
