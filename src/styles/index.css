@@ -193,6 +193,8 @@ label {
 
 .product-image a img {
 	width: 100%;
+	object-fit: cover;
+    height: 30vw;
 }
 .collection img {
     max-width: 100%;
@@ -214,7 +216,7 @@ label {
 	padding-top: 20px;
 	text-align: center;
 }
-.product-info  h5 a {
+.product-info  h5 a, .product-card a {
     color: #141515;
     text-decoration: none;
     }

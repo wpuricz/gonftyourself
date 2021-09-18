@@ -15,7 +15,8 @@ const App = () => {
     <Layout>
       <Container fluid={true}>
         <Switch>
-          <Route path='/' component={Home} exact />
+          <Route path='/home' component={Home} exact />
+		  <Route path='/' component={Home} exact />
           <Route path='/about' component={About} />
 		  <Route path='/detail' component={Detail} />
 		  <Route path='/collections' component={Collections} />
