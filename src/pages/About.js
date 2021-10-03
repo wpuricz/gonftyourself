@@ -10,6 +10,7 @@ const About = () => {
     <div>
       <Meta title={pageTitle}/>
       <Header head={pageTitle} description={pageDescription} />
+      
       {/* <iframe
         src="https://app.uniswap.org/#/swap?outputCurrency=0xc778417E063141139Fce010982780140Aa0cD5Ab&inputCurrency=ETH&exactAmount=0.1"
         height="660px"
@@ -30,6 +31,14 @@ const About = () => {
       >
         <a href="https://widget.onramper.com" target="_blank">Buy crypto</a> 
       </iframe> */}
+      <iframe
+        title="wert-id"
+        src="https://sandbox.wert.io/01FC5PKC47FN6PX0MEGTVDJKP6/widget?containerId=wert-widget&commodities=ETH"
+        height="660px"
+        width="700px"
+        
+        
+      />
     </div>
   )
 }

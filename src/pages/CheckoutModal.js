@@ -129,14 +129,29 @@ const CheckoutModal = (props) => {
     return (
       <iframe
         title="wert"
-        src={iframeSrc}
+        src={`https://sandbox.wert.io/01FC5PKC47FN6PX0MEGTVDJKP6/widget?containerId=wert-widget&commodities=ETH`}
         height="660px"
-        width="100%"
-        style={{'borderRadius':10 }}
-        id="myId"
+        width="700px"
+        style={{borderRadius:10 }}
+        id="wert-widget"
       />
     )
   }
+
+  const currentScreen = () => {
+    switch(screenId) {
+      case Screen.BID:
+        return formComponent();
+      case Screen.UNISWAP:
+        return uniswapComponent();
+      case Screen.WERT:
+        return wertComponent();
+      default:
+        return formComponent();
+    }
+  }
+
+  // TODO: Validate Textfield when pressing bid with Credit Card
 
   return (
     <Modal show={show} onHide={closeModal} backdrop="static" keyboard={false}>
@@ -164,12 +179,19 @@ const CheckoutModal = (props) => {
         ></button>
       </Modal.Header>
       <Modal.Body>
-        {screenId === Screen.BID ? formComponent() : uniswapComponent()}
+        {/* {screenId === Screen.BID ? formComponent() : uniswapComponent()} */}
+        { currentScreen() }
       </Modal.Body>
       <Modal.Footer>
         {screenId === Screen.BID && !isSuccess ? (
           <span className="bid-footer">
             <Spinner animation={isLoading ? "border" : "none"} />
+            <button
+              className="btn btn-outline-primary"
+              onClick={() => setScreenId(Screen.WERT)}
+            >
+              Bid w/ Credit Card
+            </button>
             <button
               className="btn btn-outline-primary"
               onClick={() => setScreenId(Screen.UNISWAP)}
