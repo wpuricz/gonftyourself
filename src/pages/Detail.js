@@ -7,6 +7,7 @@ import { connectWallet } from "../utils/Wallet";
 import CheckoutModal from "./CheckoutModal";
 import * as Utils from "../utils/Utils";
 import * as Sea from "../services/Sea"; 
+import { useHistory } from "react-router-dom";
 
 const LONG_DATE_FORMAT = "dddd, MMMM Do, YYYY, h:mm:ss a";
 
@@ -15,6 +16,7 @@ const Detail = (props) => {
   const asset_contract_address = params.get("asset_contract_address");
   const token_id = params.get("token_id");
   const imageSuffix = window.screen.width > 1024 ? "=w600" : "";
+  let history = useHistory();
 
   const [assetDetails, setAssetDetails] = useState([]);
   const [properties, setProperties] = useState([]);
@@ -47,18 +49,32 @@ const Detail = (props) => {
   // Buy button event and modal show/close handlers
   const buyPressed = async () => {
     // TODO: check if a wallet exists, if not then go to wallet page
-
-    if (assetDetails.orders[0].payment_token_contract.symbol === "ETH") {
-      alert("Only bids are supported now");
-      return;
+    
+    if(window.ethereum) {
+      console.log('wallet exists')
+      let account = await window.ethereum.selectedAddress;
+      if(account) {
+        console.log('wallet connected')
+      }else{
+        console.log('wallet is not connected')
+        history.push('/walletSelection')
+      }
+    }else{
+      console.log('wallet does not exist');
+      history.push('/walletSelection')
     }
-    const currentPrice = Utils.getMaxBidFromOrder(assetDetails.orders, 0);
-    setSelectedPrice(currentPrice);
-    setSelectedName(assetDetails.name);
-    const account = await connectWallet();
-    if (account) {
-      handleShow();
-    }
+    return;
+    // if (assetDetails.orders[0].payment_token_contract.symbol === "ETH") {
+    //   alert("Only bids are supported now");
+    //   return;
+    // }
+    // const currentPrice = Utils.getMaxBidFromOrder(assetDetails.orders, 0);
+    // setSelectedPrice(currentPrice);
+    // setSelectedName(assetDetails.name);
+    // const account = await connectWallet();
+    // if (account) {
+    //   handleShow();
+    // }
   };
 
   const handleClose = () => setShow(false);
