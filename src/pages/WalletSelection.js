@@ -14,6 +14,19 @@ const WalletSelection = () => {
       network: {
         host: "rinkeby",
       },
+      whiteLabel: {          
+        theme: {            
+        isDark: false,            
+        colors: {              
+          torusBrand1: "#0D6EFD",            
+        },          
+      },          
+      logoDark: "https://tkey.surge.sh/images/Device.svg", // Dark logo for light background          
+      logoLight: "https://uploads-ssl.webflow.com/60c67c74f40bc435b735a22b/60c7826d0457395749f44ef1_GNY%20logo.png", // Light logo for dark background          
+      topupHide: false,          
+      featuredBillboardHide: true,          
+      disclaimerHide: true,          
+      defaultLanguage: "en",        },
     });
     await torus.login(); // await torus.ethereum.enable()
     const web3 = new Web3(torus.provider);
